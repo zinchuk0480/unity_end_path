@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags: []
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - dust
+  - Water
+  - UI
+  - cave
+  - Light_Rooms
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Light_Rooms
+    uniqueID: 3840515811
+    locked: 0
+  - name: dust
+    uniqueID: 106316801
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: cave
+    uniqueID: 4257071181
+    locked: 0
