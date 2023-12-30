@@ -92,14 +92,14 @@ public class Move_and_Look : MonoBehaviour
         {
             pointerRender.material.color = new UnityEngine.Color(1, 0, 0, 0.7f);
 
-            if (Input.GetMouseButtonDown(0) && hit.rigidbody.CompareTag("elevatorButton") && elevator.transform.position.y > elevatorScript.bottomLevel)
+            if (Input.GetMouseButtonDown(0) && hit.rigidbody.CompareTag("elevatorButton"))
             {
-                StartCoroutine(elevatorScript.coroutineMoveDown());
+                elevatorScript.elevatorActive = true;
             }
-            if (Input.GetMouseButtonDown(0) && hit.rigidbody.CompareTag("elevatorButton") && elevator.transform.position.y < elevatorScript.bottomLevel)
+   /*         if (Input.GetMouseButtonDown(0) && hit.rigidbody.CompareTag("elevatorButton") && elevator.transform.position.y < elevatorScript.topLevel)
             {
-                StartCoroutine(elevatorScript.coroutineMoveUp());
-            }
+                elevatorScript.moveUp();
+            }*/
 
         }
     }
