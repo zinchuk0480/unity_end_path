@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using UnityEditor.ShaderGraph;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
 public class Move_and_Look : MonoBehaviour
@@ -19,15 +22,26 @@ public class Move_and_Look : MonoBehaviour
 
     public LayerMask cave;
 
+    public GameObject Pointer;
+
+    private Renderer pointerRender;
+
+    public GameObject elevator;
+    private Elevator elevatorScript;
+
+
     // Start is called before the first frame update
     void Start()
     {
         player = GetComponent<Rigidbody>();
         cave = 1 << 6;
+
+        elevatorScript = elevator.GetComponent<Elevator>();
+        pointerRender = Pointer.GetComponent<Renderer>();
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         Look();
         Move();
@@ -67,14 +81,26 @@ public class Move_and_Look : MonoBehaviour
 
 
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
-        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.yellow);
+        Debug.DrawRay(ray.origin, ray.direction * 100f, UnityEngine.Color.yellow);
 
         RaycastHit hit;
         int layer_mask = LayerMask.GetMask("used", "used_2");
 
+        pointerRender.material.color = new UnityEngine.Color(0.3f, 0.3f, 0.3f, 0.2f);
+
         if (Physics.Raycast(ray, out hit, 50, ~cave))
         {
-            Debug.Log(LayerMask.LayerToName(hit.collider.gameObject.layer));
+            pointerRender.material.color = new UnityEngine.Color(1, 0, 0, 0.7f);
+
+            if (Input.GetMouseButtonDown(0) && hit.rigidbody.CompareTag("elevatorButton") && elevator.transform.position.y > elevatorScript.bottomLevel)
+            {
+                StartCoroutine(elevatorScript.coroutineMoveDown());
+            }
+            if (Input.GetMouseButtonDown(0) && hit.rigidbody.CompareTag("elevatorButton") && elevator.transform.position.y < elevatorScript.bottomLevel)
+            {
+                StartCoroutine(elevatorScript.coroutineMoveUp());
+            }
+
         }
     }
 }
