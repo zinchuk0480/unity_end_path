@@ -28,6 +28,9 @@ public class Move_and_Look : MonoBehaviour
 
     public GameObject elevator;
     private Elevator elevatorScript;
+    
+    public GameObject generator;
+    private Generator generatorScript;
 
 
     // Start is called before the first frame update
@@ -37,7 +40,9 @@ public class Move_and_Look : MonoBehaviour
         cave = 1 << 6;
 
         elevatorScript = elevator.GetComponent<Elevator>();
+        generatorScript = generator.GetComponent<Generator>();
         pointerRender = Pointer.GetComponent<Renderer>();
+
     }
 
     // Update is called once per frame
@@ -96,10 +101,10 @@ public class Move_and_Look : MonoBehaviour
             {
                 elevatorScript.elevatorActive = true;
             }
-   /*         if (Input.GetMouseButtonDown(0) && hit.rigidbody.CompareTag("elevatorButton") && elevator.transform.position.y < elevatorScript.topLevel)
+            if (Input.GetMouseButtonDown(0) && hit.rigidbody.CompareTag("generatorButton"))
             {
-                elevatorScript.moveUp();
-            }*/
+                generatorScript.generatorActive = true;
+            }
 
         }
     }
