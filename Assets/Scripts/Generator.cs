@@ -29,11 +29,6 @@ public class Generator : MonoBehaviour
         {
             GeneratorOff();
         }
-        if (start)
-        {
-            generatorVFX.Stop();
-            generatorVFX.Play();
-        }
     }
 
     public void GeneratorOn()
@@ -41,11 +36,15 @@ public class Generator : MonoBehaviour
         generatorActive = false;
         stop = false;
         start = true;
+        generator.GetComponent<AudioSource>().Play();
+        generatorVFX.Play();
     }
     public void GeneratorOff()
     {
         generatorActive = false;
         stop = true;
         start = false;
+        generator.GetComponent<AudioSource>().Stop();
+        generatorVFX.Stop();
     }
 }
