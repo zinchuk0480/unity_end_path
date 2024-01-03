@@ -12,48 +12,90 @@ public class Elevator : MonoBehaviour
     public float bottomLevel = 0.3f;
 
     public bool elevatorActive = false;
+    private bool elevatorStartMoving = false;
     private bool elevatorIsDown = false;
     private bool elevatorIsUp = true;
 
 
-    // Update is called once per frame
-    void Update()
+    public AudioClip buttonClick;
+    private AudioSource elevatorAudio;
+    public AudioSource elevatorButton;
+
+    public GameObject generator;
+    private Generator generatorScript;
+
+    private void Start()
     {
-        if (elevatorActive && elevatorIsUp)
+        elevatorAudio = GetComponent<AudioSource>();
+        elevatorButton = GameObject.FindGameObjectWithTag("elevatorButton").GetComponent<AudioSource>();
+        generator = GameObject.FindGameObjectWithTag("generatorButton");
+        generatorScript = generator.GetComponent<Generator>();
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        if (!elevatorStartMoving && elevatorActive && generatorScript.start)
+        {
+            elevatorButton.PlayOneShot(buttonClick, 0.7f);
+            elevatorAudio.Play();
+            elevatorStartMoving = true;
+            elevatorActive = false;
+        }
+        
+
+        if (elevatorStartMoving && elevatorIsUp && generatorScript.start)
         {
             moveDown();
-
         }
-        if (elevatorActive && elevatorIsDown)
+        if (elevatorStartMoving && elevatorIsDown && generatorScript.start)
         {
             moveUp();
         }
-    }
 
+        if (elevatorActive && generatorScript.stop)
+        {
+            elevatorButton.PlayOneShot(buttonClick, 0.7f);
+            elevatorAudio.Stop();
+            elevatorActive = false;
+        }                
+        if (elevatorActive)
+        {
+            elevatorButton.PlayOneShot(buttonClick, 0.7f);
+            elevatorActive = false;
+        }
+        if (generatorScript.stop)
+        {
+            elevatorAudio.Stop();
+        }        
+    }
     public void moveDown()
     {
-        Debug.Log("MoveDown");
         transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, bottomLevel, transform.position.z), elevatorSpeed * Time.deltaTime);
+        
         if (transform.position.y <= bottomLevel)
         {
             transform.position = EndPath(bottomLevel);
             elevatorActive = false;
             elevatorIsUp = false;
             elevatorIsDown = true;
+            elevatorStartMoving = false;
+            elevatorAudio.Stop();
         }
     }
 
     public void moveUp()
     {
-        Debug.Log("MoveUp");
         transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, topLevel, transform.position.z), elevatorSpeed * Time.deltaTime);
-        /*transform.position = new Vector3(transform.position.x, transform.position.y * 0.001f * Time.deltaTime, transform.position.z);*/
+
         if (transform.position.y >= topLevel)
         {
             transform.position = EndPath(topLevel);
             elevatorActive = false;
             elevatorIsDown = false;
             elevatorIsUp = true;
+            elevatorStartMoving = false;
+            elevatorAudio.Stop();
         }
     }
 

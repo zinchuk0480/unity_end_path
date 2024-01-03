@@ -10,10 +10,16 @@ public class Generator : MonoBehaviour
     public bool stop = true;
 
     public GameObject generator;
+    public AudioSource generatorAudio;
     public VisualEffect generatorVFX;
+
+
+    public AudioClip buttonClick;
+
 
     private void Start()
     {
+        generatorAudio = generator.GetComponent<AudioSource>();
         generatorVFX = generator.GetComponent<VisualEffect>();
         generatorVFX.Stop();
     }
@@ -28,6 +34,7 @@ public class Generator : MonoBehaviour
         if (start && generatorActive)
         {
             GeneratorOff();
+            generatorAudio.PlayOneShot(buttonClick, 0.5f);
         }
     }
 
@@ -36,7 +43,8 @@ public class Generator : MonoBehaviour
         generatorActive = false;
         stop = false;
         start = true;
-        generator.GetComponent<AudioSource>().Play();
+        generatorAudio.PlayOneShot(buttonClick, 0.5f);
+        generatorAudio.Play();
         generatorVFX.Play();
     }
     public void GeneratorOff()
@@ -44,7 +52,7 @@ public class Generator : MonoBehaviour
         generatorActive = false;
         stop = true;
         start = false;
-        generator.GetComponent<AudioSource>().Stop();
+        generatorAudio.Stop();
         generatorVFX.Stop();
     }
 }
