@@ -21,6 +21,9 @@ public class Elevator : MonoBehaviour
     private AudioSource elevatorAudio;
     public AudioSource elevatorButton;
 
+    public GameObject cageDoor;
+    private bool cageOpen = false;
+
     public GameObject generator;
     private Generator generatorScript;
 
@@ -28,12 +31,15 @@ public class Elevator : MonoBehaviour
     {
         elevatorAudio = GetComponent<AudioSource>();
         elevatorButton = GameObject.FindGameObjectWithTag("elevatorButton").GetComponent<AudioSource>();
+
+        cageDoor = GameObject.FindGameObjectWithTag("cageDoor");
+
         generator = GameObject.FindGameObjectWithTag("generatorButton");
         generatorScript = generator.GetComponent<Generator>();
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void LateUpdate()
     {
         if (!elevatorStartMoving && elevatorActive && generatorScript.start)
         {
@@ -68,6 +74,7 @@ public class Elevator : MonoBehaviour
         {
             elevatorAudio.Stop();
         }        
+
     }
     public void moveDown()
     {
@@ -81,6 +88,10 @@ public class Elevator : MonoBehaviour
             elevatorIsDown = true;
             elevatorStartMoving = false;
             elevatorAudio.Stop();
+
+            Debug.Log("OPPPENENENE");   
+            cageOpen = true;
+            cageDoor.GetComponent<Animator>().SetBool("cageDoorClose", true);
         }
     }
 
@@ -88,14 +99,18 @@ public class Elevator : MonoBehaviour
     {
         transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, topLevel, transform.position.z), elevatorSpeed * Time.deltaTime);
 
+        cageOpen = false;
+        cageDoor.GetComponent<Animator>().SetBool("cageDoorClose", false);
+
         if (transform.position.y >= topLevel)
         {
             transform.position = EndPath(topLevel);
             elevatorActive = false;
-            elevatorIsDown = false;
             elevatorIsUp = true;
+            elevatorIsDown = false;
             elevatorStartMoving = false;
             elevatorAudio.Stop();
+
         }
     }
 
