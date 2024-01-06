@@ -33,6 +33,8 @@ public class Move_and_Look : MonoBehaviour
     public GameObject generator;
     private Generator generatorScript;
 
+    public bool inElevator = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -43,7 +45,6 @@ public class Move_and_Look : MonoBehaviour
         elevatorScript = elevator.GetComponent<Elevator>();
         generatorScript = generator.GetComponent<Generator>();
         pointerRender = Pointer.GetComponent<Renderer>();
-
     }
 
     // Update is called once per frame
@@ -52,6 +53,7 @@ public class Move_and_Look : MonoBehaviour
         Look();
         Move();
         CreateRay();
+        PlayerInElevatorMove();
     }
 
     void Look()
@@ -107,6 +109,24 @@ public class Move_and_Look : MonoBehaviour
                 generatorScript.generatorActive = true;
             }
 
+        }
+    }
+
+    public void PlayerInElevatorMove()
+    {
+        if (inElevator)
+        {
+            transform.position = new Vector3(transform.position.x, elevator.transform.position.y + 1.8f, transform.position.z);
+        }
+    }
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Elevator"))
+        {
+            inElevator = true;
+        } else
+        {
+            inElevator = false;
         }
     }
 }

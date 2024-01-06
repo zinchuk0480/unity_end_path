@@ -404,7 +404,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -1076,7 +1076,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 926048884}
   m_LocalRotation: {x: -0.01095378, y: -0.9930679, z: 0.09832285, w: 0.06347249}
-  m_LocalPosition: {x: -2.88, y: 0.781, z: -1.719}
+  m_LocalPosition: {x: -2.88, y: 0.682, z: -1.719}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1108,7 +1108,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 90
   m_CollisionDetection: 0
 --- !u!114 &926048890
 MonoBehaviour:
@@ -1857,7 +1857,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1215715418}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1908,7 +1908,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1215715418}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.816909, y: 1.9747144, z: 0.4813622}
+  m_LocalPosition: {x: -4.816909, y: 1.808, z: 0.4813622}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1940,6 +1940,7 @@ MonoBehaviour:
   Pointer: {fileID: 211139327}
   elevator: {fileID: 1529511869}
   generator: {fileID: 926048884}
+  inElevator: 0
 --- !u!54 &1215715424
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1962,10 +1963,10 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!1 &1401920794
 GameObject:
@@ -2081,10 +2082,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1529511870}
-  - component: {fileID: 1529511871}
   - component: {fileID: 1529511872}
   - component: {fileID: 1529511873}
-  m_Layer: 6
+  - component: {fileID: 1529511874}
+  m_Layer: 0
   m_Name: Elevator
   m_TagString: Elevator
   m_Icon: {fileID: 0}
@@ -2111,33 +2112,6 @@ Transform:
   m_Father: {fileID: 543450653528537195}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &1529511871
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1529511869}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &1529511872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2178,7 +2152,7 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 1.3739214
   MaxDistance: 25
   Pan2D: 0
   rolloffMode: 1
@@ -2254,6 +2228,27 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!65 &1529511874
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529511869}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.5715951, y: 1.3894482, z: 1.0536832}
+  m_Center: {x: -0.6127886, y: 0.87595654, z: -0.0057404637}
 --- !u!1001 &1604080303
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2994,7 +2989,8 @@ GameObject:
   - component: {fileID: 5354254924134930024}
   - component: {fileID: 1470728054121295312}
   - component: {fileID: 886078011433065399}
-  m_Layer: 6
+  - component: {fileID: 5354254924134930026}
+  m_Layer: 0
   m_Name: Elevator border 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3013,10 +3009,10 @@ Transform:
   m_LocalScale: {x: 0.10000001, y: 0.1, z: 0.10000001}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6645823805973219061}
   - {fileID: 6738450969462640149}
   - {fileID: 1104018296}
   - {fileID: 1717870481}
+  - {fileID: 6645823805973219061}
   m_Father: {fileID: 1020919699}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 135, z: 0}
@@ -3086,7 +3082,7 @@ GameObject:
   - component: {fileID: 3745622628517847822}
   - component: {fileID: 5334037119493330320}
   - component: {fileID: 4539702728220838223}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3238,7 +3234,8 @@ GameObject:
   - component: {fileID: 2776022547319141074}
   - component: {fileID: 7925325327183116753}
   - component: {fileID: 8375957649703604279}
-  m_Layer: 6
+  - component: {fileID: 8375957649703604281}
+  m_Layer: 0
   m_Name: Elevator platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3436,7 +3433,7 @@ GameObject:
   - component: {fileID: 8363474754820356062}
   - component: {fileID: 7076705672440732713}
   - component: {fileID: 452766308439065823}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Elevator border 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3454,7 +3451,7 @@ GameObject:
   - component: {fileID: 5137221048021488237}
   - component: {fileID: 3529156007016805627}
   - component: {fileID: 4862276504023555375}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Elevator border 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3843,6 +3840,15 @@ Transform:
   m_Father: {fileID: 1529511870}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!45 &5354254924134930026
+Skybox:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 495958565820298335}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 0}
 --- !u!33 &5366159435043644545
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -4001,7 +4007,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3655000509318845124}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4513,6 +4519,15 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!45 &8375957649703604281
+Skybox:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1204240282678913421}
+  m_Enabled: 1
+  m_CustomSkybox: {fileID: 0}
 --- !u!1 &8416272008088264293
 GameObject:
   m_ObjectHideFlags: 0
