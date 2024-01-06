@@ -41,40 +41,40 @@ public class Elevator : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        if (!elevatorStartMoving && elevatorActive && generatorScript.start)
+        ElevatorActivate();
+        ElevatorMove();
+        ElevatorAudioStop();
+        ClickButton();
+    }
+
+    private void ClickButton()
+    {
+        if (elevatorActive)
+        {
+            elevatorButton.PlayOneShot(buttonClick, 0.7f);
+            elevatorActive = false;
+        }
+    }
+    private void ElevatorActivate()
+    {
+        if (elevatorActive && generatorScript.start && !elevatorStartMoving)
         {
             elevatorButton.PlayOneShot(buttonClick, 0.7f);
             elevatorAudio.Play();
             elevatorStartMoving = true;
             elevatorActive = false;
         }
-        
-
-        if (elevatorStartMoving && elevatorIsUp && generatorScript.start)
+    }
+    public void ElevatorMove()
+    {
+        if (elevatorStartMoving && generatorScript.start && elevatorIsUp)
         {
             moveDown();
         }
-        if (elevatorStartMoving && elevatorIsDown && generatorScript.start)
+        if (elevatorStartMoving && generatorScript.start && elevatorIsDown)
         {
             moveUp();
         }
-
-        if (elevatorActive && generatorScript.stop)
-        {
-            elevatorButton.PlayOneShot(buttonClick, 0.7f);
-            elevatorAudio.Stop();
-            elevatorActive = false;
-        }                
-        if (elevatorActive)
-        {
-            elevatorButton.PlayOneShot(buttonClick, 0.7f);
-            elevatorActive = false;
-        }
-        if (generatorScript.stop)
-        {
-            elevatorAudio.Stop();
-        }        
-
     }
     public void moveDown()
     {
@@ -82,19 +82,17 @@ public class Elevator : MonoBehaviour
         
         if (transform.position.y <= bottomLevel)
         {
-            transform.position = EndPath(bottomLevel);
+            transform.position = Destination(bottomLevel);
             elevatorActive = false;
             elevatorIsUp = false;
             elevatorIsDown = true;
             elevatorStartMoving = false;
             elevatorAudio.Stop();
 
-            Debug.Log("OPPPENENENE");   
             cageOpen = true;
             cageDoor.GetComponent<Animator>().SetBool("cageDoorClose", true);
         }
     }
-
     public void moveUp()
     {
         transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, topLevel, transform.position.z), elevatorSpeed * Time.deltaTime);
@@ -104,7 +102,7 @@ public class Elevator : MonoBehaviour
 
         if (transform.position.y >= topLevel)
         {
-            transform.position = EndPath(topLevel);
+            transform.position = Destination(topLevel);
             elevatorActive = false;
             elevatorIsUp = true;
             elevatorIsDown = false;
@@ -114,8 +112,16 @@ public class Elevator : MonoBehaviour
         }
     }
 
-    public Vector3 EndPath(float distenation)
+    public Vector3 Destination(float destenation)
     {
-        return new Vector3(transform.position.x, distenation, transform.position.z);
+        return new Vector3(transform.position.x, destenation, transform.position.z);
+    }
+
+    private void ElevatorAudioStop()
+    {
+        if (generatorScript.stop)
+        {
+            elevatorAudio.Stop();
+        }
     }
 }

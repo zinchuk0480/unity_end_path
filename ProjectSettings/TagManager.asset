@@ -6,6 +6,8 @@ TagManager:
   tags:
   - elevatorButton
   - Elevator
+  - generatorButton
+  - cageDoor
   layers:
   - Default
   - TransparentFX
