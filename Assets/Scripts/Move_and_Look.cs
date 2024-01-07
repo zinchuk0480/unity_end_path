@@ -33,7 +33,7 @@ public class Move_and_Look : MonoBehaviour
     public GameObject generator;
     private Generator generatorScript;
 
-    public bool inElevator = false;
+    private bool inElevator = false;
 
 
     // Start is called before the first frame update
@@ -50,10 +50,10 @@ public class Move_and_Look : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        PlayerInElevatorMove();
         Look();
         Move();
         CreateRay();
-        PlayerInElevatorMove();
     }
 
     void Look()
@@ -123,9 +123,15 @@ public class Move_and_Look : MonoBehaviour
     {
         if (other.CompareTag("Elevator"))
         {
+            player.isKinematic = true;
             inElevator = true;
-        } else
+        }
+    }
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Elevator"))
         {
+            player.isKinematic = false;
             inElevator = false;
         }
     }
