@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
@@ -9,6 +10,8 @@ using static UnityEngine.GraphicsBuffer;
 
 public class Move_and_Look : MonoBehaviour
 {
+    private GameObject gameManager;
+    private GameManager gameManagerScript;
 
     private Rigidbody player;
 
@@ -22,10 +25,7 @@ public class Move_and_Look : MonoBehaviour
     public float horizontalRotation = 0;
 
     public LayerMask cave;
-
-    public GameObject Pointer;
-
-    private Renderer pointerRender;
+    public LayerMask used;
 
     public GameObject elevator;
     private Elevator elevatorScript;
@@ -40,12 +40,15 @@ public class Move_and_Look : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = GameObject.Find("GameManager");
+        gameManagerScript = gameManager.GetComponent<GameManager>();
+
         player = GetComponent<Rigidbody>();
         cave = 1 << 6;
+        used = 1 << 8;
 
         elevatorScript = elevator.GetComponent<Elevator>();
         generatorScript = generator.GetComponent<Generator>();
-        pointerRender = Pointer.GetComponent<Renderer>();
     }
 
     // Update is called once per frame
@@ -95,11 +98,11 @@ public class Move_and_Look : MonoBehaviour
         RaycastHit hit;
         int layer_mask = LayerMask.GetMask("used", "used_2");
 
-        pointerRender.material.color = new UnityEngine.Color(0.3f, 0.3f, 0.3f, 0.2f);
+        gameManagerScript.pointerTMP.color = new UnityEngine.Color(0.3f, 0.3f, 0.3f, 0.5f);
 
-        if (Physics.Raycast(ray, out hit, 50, ~cave))
+        if (Physics.Raycast(ray, out hit, 50, used))
         {
-            pointerRender.material.color = new UnityEngine.Color(1, 0, 0, 0.7f);
+            gameManagerScript.pointerTMP.color = new UnityEngine.Color(1, 0, 0, 0.7f);
 
             if (Input.GetMouseButtonDown(0) && hit.rigidbody.CompareTag("elevatorButton"))
             {
@@ -131,7 +134,7 @@ public class Move_and_Look : MonoBehaviour
         if (other.CompareTag("alarmTrigger"))
         {
             generatorScript.generatorActive = false;
-            elevatorScript.alarm = true;
+            gameManagerScript.alarm = true;
         }
     }
     void OnTriggerExit(Collider other)
