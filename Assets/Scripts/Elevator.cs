@@ -21,8 +21,12 @@ public class Elevator : MonoBehaviour
     private AudioSource elevatorAudio;
     public AudioSource elevatorButton;
 
+    public bool alarm = false;
+
     public GameObject cageDoor;
     private bool cageOpen = false;
+
+    public GameObject alarmLight;
 
     public GameObject generator;
     private Generator generatorScript;
@@ -33,6 +37,8 @@ public class Elevator : MonoBehaviour
         elevatorButton = GameObject.FindGameObjectWithTag("elevatorButton").GetComponent<AudioSource>();
 
         cageDoor = GameObject.FindGameObjectWithTag("cageDoor");
+        GameObject alarmLight = GameObject.Find("alarm_lights");
+        alarmLight.SetActive(false);
 
         generator = GameObject.FindGameObjectWithTag("generatorButton");
         generatorScript = generator.GetComponent<Generator>();
@@ -45,6 +51,13 @@ public class Elevator : MonoBehaviour
         ElevatorMove();
         ElevatorAudioStop();
         ClickButton();
+
+        if (alarm)
+        {
+            alarmLight.SetActive(true);
+            alarmLight.GetComponent<Animator>().SetBool("alarmLigthActive", true);
+            generatorScript.generatorActive = false;
+        }
     }
 
     private void ClickButton()

@@ -8,6 +8,8 @@ TagManager:
   - Elevator
   - generatorButton
   - cageDoor
+  - alarmLigth
+  - alarmTrigger
   layers:
   - Default
   - TransparentFX

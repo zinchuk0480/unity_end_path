@@ -36,6 +36,7 @@ public class Move_and_Look : MonoBehaviour
     private bool inElevator = false;
 
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -123,16 +124,39 @@ public class Move_and_Look : MonoBehaviour
     {
         if (other.CompareTag("Elevator"))
         {
-            player.isKinematic = true;
+            /*player.isKinematic = true;*/
             inElevator = true;
+        }
+
+        if (other.CompareTag("alarmTrigger"))
+        {
+            generatorScript.generatorActive = false;
+            elevatorScript.alarm = true;
         }
     }
     void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Elevator"))
         {
-            player.isKinematic = false;
+            /*player.isKinematic = false;*/
             inElevator = false;
+        }
+    }
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log(collision.contacts.Length);
+        if (collision.contacts.Length <= 0)
+        {
+            player.isKinematic = false;
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        Debug.Log(collision.contacts.Length);
+        if (collision.contacts.Length >= 0 & collision.gameObject.layer != cave)
+        {
+            player.isKinematic = true;
         }
     }
 }
