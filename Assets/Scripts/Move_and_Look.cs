@@ -18,6 +18,7 @@ public class Move_and_Look : MonoBehaviour
     public float speed = 5.0f;
     public float mouseSens = 2.0f;
     public float jumpForce = 5.0f;
+    public float rayDistance = 1.5f;
 
     public bool onGround = true;
 
@@ -93,14 +94,14 @@ public class Move_and_Look : MonoBehaviour
 
 
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
-        Debug.DrawRay(ray.origin, ray.direction * 100f, UnityEngine.Color.yellow);
+        Debug.DrawRay(ray.origin, ray.direction * rayDistance, UnityEngine.Color.yellow);
 
         RaycastHit hit;
         int layer_mask = LayerMask.GetMask("used", "used_2");
 
         gameManagerScript.pointerTMP.color = new UnityEngine.Color(0.3f, 0.3f, 0.3f, 0.5f);
 
-        if (Physics.Raycast(ray, out hit, 50, used))
+        if (Physics.Raycast(ray, out hit, rayDistance, used))
         {
             gameManagerScript.pointerTMP.color = new UnityEngine.Color(1, 0, 0, 0.7f);
 
@@ -145,7 +146,7 @@ public class Move_and_Look : MonoBehaviour
             inElevator = false;
         }
     }
-    void OnCollisionEnter(Collision collision)
+/*    void OnCollisionEnter(Collision collision)
     {
         Debug.Log(collision.contacts.Length);
         if (collision.contacts.Length <= 0)
@@ -161,5 +162,5 @@ public class Move_and_Look : MonoBehaviour
         {
             player.isKinematic = true;
         }
-    }
+    }*/
 }

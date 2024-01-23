@@ -3,7 +3,11 @@ guid: e1aa41e47c6ed2d47b1bd8144ec012d9
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - buttonClick: {instanceID: 0}
+  - elevatorButton: {instanceID: 0}
+  - cageDoor: {instanceID: 0}
+  - generator: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

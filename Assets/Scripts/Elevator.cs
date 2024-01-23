@@ -18,7 +18,7 @@ public class Elevator : MonoBehaviour
 
 
     public AudioClip buttonClick;
-    private AudioSource elevatorAudio;
+    public AudioSource elevatorAudio;
     public AudioSource elevatorButton;
 
 
@@ -53,7 +53,7 @@ public class Elevator : MonoBehaviour
 
     }
 
-    private void ClickButton()
+    public void ClickButton()
     {
         if (elevatorActive)
         {
