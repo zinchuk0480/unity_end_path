@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     public bool alarm = false;
     public GameObject alarmLight;
 
+    private GameObject audioManager;
+    public AudioSource audioManagerSource;
 
 
     // Start is called before the first frame update
@@ -35,6 +37,10 @@ public class GameManager : MonoBehaviour
 
         GameObject alarmLight = GameObject.Find("alarm_lights");
         alarmLight.SetActive(false);
+
+
+        audioManager = GameObject.Find("AudioManager");
+        audioManagerSource = audioManager.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame

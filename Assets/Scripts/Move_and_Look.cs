@@ -17,7 +17,7 @@ public class Move_and_Look : MonoBehaviour
 
     public float speed = 5.0f;
     public float mouseSens = 2.0f;
-    public float jumpForce = 5.0f;
+    public float jumpForce = 20.0f;
     public float rayDistance = 1.5f;
 
     public bool onGround = true;
@@ -35,7 +35,7 @@ public class Move_and_Look : MonoBehaviour
     private Generator generatorScript;
 
     private bool inElevator = false;
-
+    private bool onStairs = false;
 
 
     // Start is called before the first frame update
@@ -59,6 +59,14 @@ public class Move_and_Look : MonoBehaviour
         Look();
         Move();
         CreateRay();
+        if (onStairs)
+        {
+            player.isKinematic = true;
+        }
+        else
+        {
+            player.isKinematic = false;
+        }
     }
 
     void Look()
@@ -78,12 +86,19 @@ public class Move_and_Look : MonoBehaviour
         float input_forward = Input.GetAxis("Vertical") * speed * Time.deltaTime;
         float input_horizontal = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
 
-        transform.Translate(new Vector3(input_horizontal, 0, input_forward));
-
-        if (Input.GetKeyDown(KeyCode.Space) && onGround)
+        if (onStairs)
         {
-            player.AddForce(transform.up * jumpForce * Time.deltaTime, ForceMode.Impulse);
-            onGround = false;
+            transform.Translate(new Vector3(0, input_forward, 0));
+        }
+        else
+        {
+            transform.Translate(new Vector3(input_horizontal, 0, input_forward));
+
+            if (Input.GetKeyDown(KeyCode.Space) && onGround)
+            {
+                player.AddForce(Vector3.up * jumpForce * Time.deltaTime, ForceMode.Impulse);
+                onGround = false;
+            }
         }
     }
 
@@ -105,15 +120,35 @@ public class Move_and_Look : MonoBehaviour
         {
             gameManagerScript.pointerTMP.color = new UnityEngine.Color(1, 0, 0, 0.7f);
 
+            Debug.Log(hit.rigidbody.name);
+
             if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E) && hit.rigidbody.CompareTag("elevatorButton"))
             {
+                gameManagerScript.audioManagerSource.transform.position = hit.point;
                 elevatorScript.elevatorActive = true;
             }
             if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E) && hit.rigidbody.CompareTag("generatorButton"))
             {
+                gameManagerScript.audioManagerSource.transform.position = hit.point;
                 generatorScript.generatorActive = true;
             }
-
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E) && hit.rigidbody.CompareTag("stairs"))
+            {
+                if (onStairs)
+                {
+                    onStairs = false;
+                    player.isKinematic = false;
+                    player.transform.position = new Vector3(-3f, player.transform.position.y + 1f, 0f);
+                }
+                else
+                {
+                    onStairs = true;
+                    player.isKinematic = true;
+                    inElevator = false;
+                    player.transform.position = new Vector3(0.7f, player.transform.position.y + 1f, 0.5f);
+                }
+            }
+            
         }
     }
 
@@ -121,7 +156,7 @@ public class Move_and_Look : MonoBehaviour
     {
         if (inElevator)
         {
-            transform.position = new Vector3(transform.position.x, elevator.transform.position.y + 1.8f, transform.position.z);
+            transform.position = new Vector3(transform.position.x, elevator.transform.position.y + 1.2f, transform.position.z);
             player.isKinematic = true;
         } else
         {
@@ -130,9 +165,8 @@ public class Move_and_Look : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Elevator"))
+        if (other.CompareTag("Elevator") && !onStairs)
         {
-            /*player.isKinematic = true;*/
             inElevator = true;
         }
 
@@ -146,25 +180,7 @@ public class Move_and_Look : MonoBehaviour
     {
         if (other.CompareTag("Elevator"))
         {
-            /*player.isKinematic = false;*/
             inElevator = false;
         }
     }
-/*    void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log(collision.contacts.Length);
-        if (collision.contacts.Length <= 0)
-        {
-            player.isKinematic = false;
-        }
-    }
-
-    void OnCollisionExit(Collision collision)
-    {
-        Debug.Log(collision.contacts.Length);
-        if (collision.contacts.Length >= 0 & collision.gameObject.layer != cave)
-        {
-            player.isKinematic = true;
-        }
-    }*/
 }

@@ -1,11 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
 public class Elevator : MonoBehaviour
 {
+
+    private GameObject gameManager;
+    private GameManager gameManagerScript;
+
+
     // Start is called before the first frame update
     public float elevatorSpeed = 1f;
     public float topLevel = 20f;
@@ -19,21 +25,29 @@ public class Elevator : MonoBehaviour
 
     public AudioClip buttonClick;
     public AudioSource elevatorAudio;
-    public AudioSource elevatorButton;
+    /*    public AudioSource elevatorButton;*/
+
 
 
     public GameObject cageDoor;
     private bool cageOpen = false;
 
     
-
     public GameObject generator;
     private Generator generatorScript;
 
+
+    private Vector3 hit_point;
+
+
     private void Start()
     {
+        gameManager = GameObject.Find("GameManager");
+        gameManagerScript = gameManager.GetComponent<GameManager>();
+
         elevatorAudio = GetComponent<AudioSource>();
-        elevatorButton = GameObject.FindGameObjectWithTag("elevatorButton").GetComponent<AudioSource>();
+
+        /*elevatorButton*/ /*= GameObject.FindGameObjectWithTag("elevatorButton").GetComponent<AudioSource>();*/
 
         cageDoor = GameObject.FindGameObjectWithTag("cageDoor");
         
@@ -49,15 +63,13 @@ public class Elevator : MonoBehaviour
         ElevatorMove();
         ElevatorAudioStop();
         ClickButton();
-        
-
     }
 
     public void ClickButton()
     {
         if (elevatorActive)
         {
-            elevatorButton.PlayOneShot(buttonClick, 0.7f);
+            gameManagerScript.audioManagerSource.PlayOneShot(buttonClick, 0.7f);
             elevatorActive = false;
         }
     }
@@ -65,7 +77,7 @@ public class Elevator : MonoBehaviour
     {
         if (elevatorActive && generatorScript.start && !elevatorStartMoving)
         {
-            elevatorButton.PlayOneShot(buttonClick, 0.7f);
+            gameManagerScript.audioManagerSource.PlayOneShot(buttonClick, 0.7f);
             elevatorAudio.Play();
             elevatorStartMoving = true;
             elevatorActive = false;
