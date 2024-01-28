@@ -105,11 +105,11 @@ public class Move_and_Look : MonoBehaviour
         {
             gameManagerScript.pointerTMP.color = new UnityEngine.Color(1, 0, 0, 0.7f);
 
-            if (Input.GetMouseButtonDown(0) && hit.rigidbody.CompareTag("elevatorButton"))
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E) && hit.rigidbody.CompareTag("elevatorButton"))
             {
                 elevatorScript.elevatorActive = true;
             }
-            if (Input.GetMouseButtonDown(0) && hit.rigidbody.CompareTag("generatorButton"))
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E) && hit.rigidbody.CompareTag("generatorButton"))
             {
                 generatorScript.generatorActive = true;
             }
@@ -122,6 +122,10 @@ public class Move_and_Look : MonoBehaviour
         if (inElevator)
         {
             transform.position = new Vector3(transform.position.x, elevator.transform.position.y + 1.8f, transform.position.z);
+            player.isKinematic = true;
+        } else
+        {
+            player.isKinematic = false;
         }
     }
     void OnTriggerEnter(Collider other)
@@ -134,7 +138,7 @@ public class Move_and_Look : MonoBehaviour
 
         if (other.CompareTag("alarmTrigger"))
         {
-            generatorScript.generatorActive = false;
+            generatorScript.GeneratorOff();
             gameManagerScript.alarm = true;
         }
     }
