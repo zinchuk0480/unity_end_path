@@ -10,6 +10,7 @@ TagManager:
   - cageDoor
   - alarmLigth
   - alarmTrigger
+  - stairs
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - Light_Rooms
   - used
   - used_2
-  - 
+  - HUD
   - 
   - 
   - 
@@ -56,3 +57,6 @@ TagManager:
   - name: cave
     uniqueID: 4257071181
     locked: 0
+  - name: HUD
+    uniqueID: 1965761465
+    locked: 1

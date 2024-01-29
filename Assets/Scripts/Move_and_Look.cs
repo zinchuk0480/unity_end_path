@@ -34,8 +34,9 @@ public class Move_and_Look : MonoBehaviour
     public GameObject generator;
     private Generator generatorScript;
 
-    private bool inElevator = false;
-    private bool onStairs = false;
+    public bool inElevator = false;
+    public bool lookToStairs = false;
+    public bool onStairs = false;
 
 
     // Start is called before the first frame update
@@ -58,6 +59,10 @@ public class Move_and_Look : MonoBehaviour
         PlayerInElevatorMove();
         Look();
         Move();
+
+        StairsControl();
+        lookToStairs = false;
+
         CreateRay();
         if (onStairs)
         {
@@ -118,6 +123,7 @@ public class Move_and_Look : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, rayDistance, used))
         {
+            
             gameManagerScript.pointerTMP.color = new UnityEngine.Color(1, 0, 0, 0.7f);
 
             Debug.Log(hit.rigidbody.name);
@@ -132,23 +138,30 @@ public class Move_and_Look : MonoBehaviour
                 gameManagerScript.audioManagerSource.transform.position = hit.point;
                 generatorScript.generatorActive = true;
             }
-            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E) && hit.rigidbody.CompareTag("stairs"))
+            if (hit.rigidbody.CompareTag("stairs"))
             {
-                if (onStairs)
-                {
-                    onStairs = false;
-                    player.isKinematic = false;
-                    player.transform.position = new Vector3(-3f, player.transform.position.y + 1f, 0f);
-                }
-                else
-                {
-                    onStairs = true;
-                    player.isKinematic = true;
-                    inElevator = false;
-                    player.transform.position = new Vector3(0.7f, player.transform.position.y + 1f, 0.5f);
-                }
+                lookToStairs = true;
+
+
             }
-            
+
+        }
+    }
+
+    public void StairsControl()
+    {
+        if (onStairs && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E)))
+        {
+            onStairs = false;
+            player.isKinematic = false;
+            player.transform.position = new Vector3(-1f, player.transform.position.y + 1f, 0f);
+        }
+        if (!onStairs && lookToStairs && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E)))
+        {
+            onStairs = true;
+            player.isKinematic = true;
+            inElevator = false;
+            player.transform.position = new Vector3(0.7f, player.transform.position.y + 1f, 0.5f);
         }
     }
 
@@ -172,6 +185,7 @@ public class Move_and_Look : MonoBehaviour
 
         if (other.CompareTag("alarmTrigger"))
         {
+            Debug.Log("Generator!!!!");
             generatorScript.GeneratorOff();
             gameManagerScript.alarm = true;
         }
