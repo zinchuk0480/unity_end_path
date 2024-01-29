@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using TMPro;
+using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
@@ -35,6 +36,9 @@ public class Move_and_Look : MonoBehaviour
     private Generator generatorScript;
 
     public bool inElevator = false;
+
+    private GameObject stairs;
+    private GameObject current_stairs;
     public bool lookToStairs = false;
     public bool onStairs = false;
 
@@ -93,7 +97,17 @@ public class Move_and_Look : MonoBehaviour
 
         if (onStairs)
         {
-            transform.Translate(new Vector3(0, input_forward, 0));
+            Vector3 stairsTop = current_stairs.transform.position + Vector3.up * (current_stairs.GetComponent<Renderer>().bounds.size.y / 2);
+            Vector3 stairsBottom = current_stairs.transform.position - Vector3.up * (current_stairs.GetComponent<Renderer>().bounds.size.y / 2);
+
+            if (input_forward > 0 && player.transform.position.y < stairsTop.y)
+            {
+                transform.Translate(new Vector3(0, input_forward, 0));
+            }
+            if (input_forward < 0 && player.transform.position.y > stairsBottom.y)
+            {
+                transform.Translate(new Vector3(0, input_forward, 0));
+            }
         }
         else
         {
@@ -112,7 +126,6 @@ public class Move_and_Look : MonoBehaviour
         // центр экрана
         Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
 
-
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
         Debug.DrawRay(ray.origin, ray.direction * rayDistance, UnityEngine.Color.yellow);
 
@@ -128,23 +141,26 @@ public class Move_and_Look : MonoBehaviour
 
             Debug.Log(hit.rigidbody.name);
 
-            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E) && hit.rigidbody.CompareTag("elevatorButton"))
-            {
-                gameManagerScript.audioManagerSource.transform.position = hit.point;
-                elevatorScript.elevatorActive = true;
-            }
-            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E) && hit.rigidbody.CompareTag("generatorButton"))
-            {
-                gameManagerScript.audioManagerSource.transform.position = hit.point;
-                generatorScript.generatorActive = true;
-            }
-            if (hit.rigidbody.CompareTag("stairs"))
-            {
-                lookToStairs = true;
+            ClickOnHandler(hit);
+        }
+    }
 
-
-            }
-
+    void ClickOnHandler(RaycastHit hit)
+    {
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E) && hit.rigidbody.CompareTag("elevatorButton"))
+        {
+            gameManagerScript.audioManagerSource.transform.position = hit.point;
+            elevatorScript.elevatorActive = true;
+        }
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E) && hit.rigidbody.CompareTag("generatorButton"))
+        {
+            gameManagerScript.audioManagerSource.transform.position = hit.point;
+            generatorScript.generatorActive = true;
+        }
+        if (hit.rigidbody.CompareTag("stairs"))
+        {
+            lookToStairs = true;
+            stairs = hit.collider.gameObject;
         }
     }
 
@@ -154,14 +170,15 @@ public class Move_and_Look : MonoBehaviour
         {
             onStairs = false;
             player.isKinematic = false;
-            player.transform.position = new Vector3(-1f, player.transform.position.y + 1f, 0f);
+            player.transform.localPosition = new Vector3(0f, player.transform.position.y + 0.5f, 2f);
         }
         if (!onStairs && lookToStairs && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E)))
         {
+            current_stairs = stairs;
             onStairs = true;
             player.isKinematic = true;
             inElevator = false;
-            player.transform.position = new Vector3(0.7f, player.transform.position.y + 1f, 0.5f);
+            player.transform.localPosition = new Vector3(0.7f, player.transform.position.y + 1f, 0.5f);
         }
     }
 
