@@ -53,6 +53,7 @@ public class Move_and_Look : MonoBehaviour
         cave = 1 << 6;
         used = 1 << 8;
 
+        elevator = GameObject.Find("Elevator");
         elevatorScript = elevator.GetComponent<Elevator>();
         generatorScript = generator.GetComponent<Generator>();
     }
@@ -68,14 +69,6 @@ public class Move_and_Look : MonoBehaviour
         lookToStairs = false;
 
         CreateRay();
-        if (onStairs)
-        {
-            player.isKinematic = true;
-        }
-        else
-        {
-            player.isKinematic = false;
-        }
     }
 
     void Look()
@@ -97,6 +90,8 @@ public class Move_and_Look : MonoBehaviour
 
         if (onStairs)
         {
+            player.isKinematic = true;
+
             Vector3 stairsTop = current_stairs.transform.position + Vector3.up * (current_stairs.GetComponent<Renderer>().bounds.size.y / 2);
             Vector3 stairsBottom = current_stairs.transform.position - Vector3.up * (current_stairs.GetComponent<Renderer>().bounds.size.y / 2);
 
@@ -170,15 +165,16 @@ public class Move_and_Look : MonoBehaviour
         {
             onStairs = false;
             player.isKinematic = false;
-            player.transform.localPosition = new Vector3(0f, player.transform.position.y + 0.5f, 2f);
+            transform.localPosition = new Vector3(0f, transform.position.y + 0.5f, 2f);
         }
         if (!onStairs && lookToStairs && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E)))
         {
             current_stairs = stairs;
+            Vector3 newPlayerPosition = new Vector3(current_stairs.GetComponent<Rigidbody>().transform.position.x - 0.5f, transform.position.y, current_stairs.GetComponent<Rigidbody>().transform.position.z - 0.1f);
             onStairs = true;
             player.isKinematic = true;
-            inElevator = false;
-            player.transform.localPosition = new Vector3(0.7f, player.transform.position.y + 1f, 0.5f);
+/*            inElevator = false;*/
+            transform.localPosition = newPlayerPosition;
         }
     }
 
@@ -186,10 +182,13 @@ public class Move_and_Look : MonoBehaviour
     {
         if (inElevator)
         {
-            transform.position = new Vector3(transform.position.x, elevator.transform.position.y + 1.2f, transform.position.z);
+            transform.parent.SetParent(elevator.transform);
+            transform.position = new Vector3(transform.position.x, elevator.transform.position.y + 1.4f, transform.position.z);
             player.isKinematic = true;
         } else
         {
+            transform.parent.SetParent(null);
+            transform.parent.position = new Vector3(0, 0, 0);
             player.isKinematic = false;
         }
     }

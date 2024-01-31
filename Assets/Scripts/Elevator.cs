@@ -11,6 +11,8 @@ public class Elevator : MonoBehaviour
     private GameObject gameManager;
     private GameManager gameManagerScript;
 
+    private GameObject player;
+
 
     // Start is called before the first frame update
     public float elevatorSpeed = 1f;
@@ -45,6 +47,7 @@ public class Elevator : MonoBehaviour
         gameManager = GameObject.Find("GameManager");
         gameManagerScript = gameManager.GetComponent<GameManager>();
 
+        player = GameObject.Find("PlayerContainer");
         elevatorAudio = GetComponent<AudioSource>();
 
         /*elevatorButton*/ /*= GameObject.FindGameObjectWithTag("elevatorButton").GetComponent<AudioSource>();*/
@@ -97,7 +100,8 @@ public class Elevator : MonoBehaviour
     public void moveDown()
     {
         transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, bottomLevel, transform.position.z), elevatorSpeed * Time.deltaTime);
-        
+
+
         if (transform.position.y <= bottomLevel)
         {
             transform.position = Destination(bottomLevel);
