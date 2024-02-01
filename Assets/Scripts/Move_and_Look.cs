@@ -14,6 +14,7 @@ public class Move_and_Look : MonoBehaviour
     private GameObject gameManager;
     private GameManager gameManagerScript;
 
+    private GameObject playerContainer;
     private Rigidbody player;
 
     public float speed = 5.0f;
@@ -49,6 +50,7 @@ public class Move_and_Look : MonoBehaviour
         gameManager = GameObject.Find("GameManager");
         gameManagerScript = gameManager.GetComponent<GameManager>();
 
+        playerContainer = GameObject.Find("PlayerContainer");
         player = GetComponent<Rigidbody>();
         cave = 1 << 6;
         used = 1 << 8;
@@ -170,11 +172,10 @@ public class Move_and_Look : MonoBehaviour
         if (!onStairs && lookToStairs && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E)))
         {
             current_stairs = stairs;
-            Vector3 newPlayerPosition = new Vector3(current_stairs.GetComponent<Rigidbody>().transform.position.x - 0.5f, transform.position.y, current_stairs.GetComponent<Rigidbody>().transform.position.z - 0.1f);
             onStairs = true;
             player.isKinematic = true;
-/*            inElevator = false;*/
-            transform.localPosition = newPlayerPosition;
+            Vector3 newPlayerPosition = new Vector3(current_stairs.GetComponent<Rigidbody>().transform.position.x - 0.5f, transform.position.y, current_stairs.GetComponent<Rigidbody>().transform.position.z - 0.1f);
+            transform.position = newPlayerPosition;
         }
     }
 
@@ -182,13 +183,14 @@ public class Move_and_Look : MonoBehaviour
     {
         if (inElevator)
         {
-            transform.parent.SetParent(elevator.transform);
+            transform.SetParent(elevator.transform);
             transform.position = new Vector3(transform.position.x, elevator.transform.position.y + 1.4f, transform.position.z);
             player.isKinematic = true;
         } else
         {
-            transform.parent.SetParent(null);
-            transform.parent.position = new Vector3(0, 0, 0);
+            transform.SetParent(playerContainer.transform);
+            /*transform.position = transform.position;*/
+            /*transform.parent.position = player.transform.position;*/
             player.isKinematic = false;
         }
     }
