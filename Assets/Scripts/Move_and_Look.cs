@@ -32,7 +32,7 @@ public class Move_and_Look : MonoBehaviour
 
     public GameObject elevator;
     private Elevator elevatorScript;
-    
+
     public GameObject generator;
     private Generator generatorScript;
 
@@ -42,6 +42,7 @@ public class Move_and_Look : MonoBehaviour
     private GameObject current_stairs;
     public bool lookToStairs = false;
     public bool onStairs = false;
+    private bool isMoving = false;
 
 
     // Start is called before the first frame update
@@ -99,7 +100,7 @@ public class Move_and_Look : MonoBehaviour
 
             if (input_forward > 0 && player.transform.position.y < stairsTop.y)
             {
-                transform.Translate(new Vector3(0, input_forward, 0));
+                transform.Translate(new Vector3(0, input_forward * 0.5f, 0));
             }
             if (input_forward < 0 && player.transform.position.y > stairsBottom.y)
             {
@@ -118,6 +119,7 @@ public class Move_and_Look : MonoBehaviour
         }
     }
 
+
     void CreateRay()
     {
         // центр экрана
@@ -133,7 +135,7 @@ public class Move_and_Look : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, rayDistance, used))
         {
-            
+
             gameManagerScript.pointerTMP.color = new UnityEngine.Color(1, 0, 0, 0.7f);
 
             Debug.Log(hit.rigidbody.name);
@@ -163,7 +165,7 @@ public class Move_and_Look : MonoBehaviour
 
     public void StairsControl()
     {
-        if (onStairs && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E)))
+        if (onStairs && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Space)))
         {
             onStairs = false;
             player.isKinematic = false;
