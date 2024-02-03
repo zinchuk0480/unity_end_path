@@ -34717,6 +34717,7 @@ MonoBehaviour:
   pointer: {fileID: 1971349046}
   pointerTMP: {fileID: 0}
   generator: {fileID: 0}
+  generatorBroke: 0
   alarm: 0
   alarmLight: {fileID: 1750745605}
   audioManagerSource: {fileID: 1268563443}
@@ -36081,8 +36082,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 37
+  m_fontSizeBase: 37
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

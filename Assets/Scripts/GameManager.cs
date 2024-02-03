@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     // GameObjects
     public GameObject generator;
     private Generator generatorScript;
+    public bool generatorBroke = false;
 
     private GameObject moveAndLook;
     private Move_and_Look moveAndLookScript;
@@ -65,7 +66,6 @@ public class GameManager : MonoBehaviour
         {
             alarmLight.SetActive(true);
             alarmLight.GetComponent<Animator>().SetBool("alarmLigthActive", true);
-            generatorScript.GeneratorOff();
         }
     }
 

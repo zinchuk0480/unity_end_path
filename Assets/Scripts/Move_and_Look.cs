@@ -204,7 +204,6 @@ public class Move_and_Look : MonoBehaviour
         if (other.CompareTag("alarmTrigger"))
         {
             Debug.Log("Generator!!!!");
-            generatorScript.GeneratorOff();
             gameManagerScript.alarm = true;
         }
     }

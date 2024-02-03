@@ -38,22 +38,24 @@ public class Generator : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        if (stop && generatorActive && !gameManagerScript.alarm)
-        {
-            GeneratorOn();
-
-        }
-        if (start && generatorActive && !gameManagerScript.alarm)
+        if (!gameManagerScript.generatorBroke && gameManagerScript.alarm)
         {
             GeneratorOff();
+            gameManagerScript.generatorBroke = true;
+        }
+        if (!gameManagerScript.generatorBroke && start && generatorActive)
+        {
+            GeneratorOff();
+        }
+        if (!gameManagerScript.generatorBroke && stop && generatorActive)
+        {
+            GeneratorOn();
         }
         if (generatorActive && gameManagerScript.alarm)
         {
             generatorAudio.PlayOneShot(buttonClick, 0.5f);
+            generatorActive = false;
         }
-
-        generatorActive = false;
-
     }
 
     public void GeneratorOn()
