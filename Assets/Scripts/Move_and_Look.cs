@@ -17,12 +17,15 @@ public class Move_and_Look : MonoBehaviour
     private GameObject playerContainer;
     private Rigidbody player;
 
-    public float speed = 5.0f;
+    public float speed;
+    public float groundSpeed = 5.0f;
+    public float airSpeed = 3f;
     public float mouseSens = 2.0f;
     public float jumpForce = 20.0f;
     public float rayDistance = 1.5f;
 
     public bool onGround = true;
+    public float rayToGroundDistance = 0.8f;
 
     public float verticalRotation = 0;
     public float horizontalRotation = 0;
@@ -48,6 +51,8 @@ public class Move_and_Look : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        speed = groundSpeed;
+
         gameManager = GameObject.Find("GameManager");
         gameManagerScript = gameManager.GetComponent<GameManager>();
 
@@ -64,6 +69,7 @@ public class Move_and_Look : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        CreateRay();
         PlayerInElevatorMove();
         Look();
         Move();
@@ -71,7 +77,6 @@ public class Move_and_Look : MonoBehaviour
         StairsControl();
         lookToStairs = false;
 
-        CreateRay();
     }
 
     void Look()
@@ -110,15 +115,19 @@ public class Move_and_Look : MonoBehaviour
         else
         {
             transform.Translate(new Vector3(input_horizontal, 0, input_forward));
-
-            if (Input.GetKeyDown(KeyCode.Space) && onGround)
-            {
-                player.AddForce(Vector3.up * jumpForce * Time.deltaTime, ForceMode.Impulse);
-                onGround = false;
-            }
+            Jump();
         }
     }
 
+    void Jump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && onGround)
+        {
+            player.AddForce(Vector3.up * jumpForce, ForceMode.Force);
+            speed = airSpeed;
+            onGround = false;
+        }
+    }
 
     void CreateRay()
     {
@@ -127,6 +136,11 @@ public class Move_and_Look : MonoBehaviour
 
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
         Debug.DrawRay(ray.origin, ray.direction * rayDistance, UnityEngine.Color.yellow);
+        
+        Ray rayBottom = new Ray(transform.position, Vector3.down);
+        Debug.DrawRay(rayBottom.origin, rayBottom.direction * rayToGroundDistance, UnityEngine.Color.red);
+
+        GroundCheck(rayBottom);
 
         RaycastHit hit;
         int layer_mask = LayerMask.GetMask("used", "used_2");
@@ -135,12 +149,18 @@ public class Move_and_Look : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, rayDistance, used))
         {
-
             gameManagerScript.pointerTMP.color = new UnityEngine.Color(1, 0, 0, 0.7f);
-
             Debug.Log(hit.rigidbody.name);
-
             ClickOnHandler(hit);
+        }
+    }
+
+    void GroundCheck(Ray rayBottom)
+    {
+        onGround = Physics.Raycast(rayBottom, rayToGroundDistance);
+        if (onGround)
+        {
+            speed = groundSpeed;
         }
     }
 
