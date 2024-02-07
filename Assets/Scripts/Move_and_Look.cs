@@ -25,7 +25,7 @@ public class Move_and_Look : MonoBehaviour
     public float rayDistance = 1.5f;
 
     public bool onGround = true;
-    public float rayToGroundDistance = 0.8f;
+    public float rayToGroundDistance = 0.9f;
 
     public float verticalRotation = 0;
     public float horizontalRotation = 0;

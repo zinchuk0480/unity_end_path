@@ -15,6 +15,7 @@ public class Generator : MonoBehaviour
     public GameObject generator;
     public AudioSource generatorAudio;
     public VisualEffect generatorVFX;
+    public VisualEffect generatorRotateVFX;
     public GameObject containerParticleGenerator;
     private ParticleSystem particleGeneratorStart;
 
@@ -28,7 +29,10 @@ public class Generator : MonoBehaviour
 
         generatorAudio = generator.GetComponent<AudioSource>();
         generatorVFX = generator.GetComponent<VisualEffect>();
+        generatorRotateVFX = GameObject.Find("VFX_Rotate").GetComponent<VisualEffect>();
+
         generatorVFX.Stop();
+        generatorRotateVFX.Stop();
 
         containerParticleGenerator = GameObject.Find("ParticleGeneratorStart");
         particleGeneratorStart = containerParticleGenerator.GetComponent<ParticleSystem>();
@@ -65,6 +69,7 @@ public class Generator : MonoBehaviour
         start = true;
         generatorAudio.Play();
         generatorVFX.Play();
+        generatorRotateVFX.Play();
         particleGeneratorStart.Play();
         generatorAudio.PlayOneShot(buttonClick, 0.5f);
     }
@@ -75,6 +80,7 @@ public class Generator : MonoBehaviour
         start = false;
         generatorAudio.Stop();
         generatorVFX.Stop();
+        generatorRotateVFX.Stop();
         particleGeneratorStart.Play();
         generatorAudio.PlayOneShot(buttonClick, 0.5f);
     }
