@@ -69,7 +69,6 @@ public class Move_and_Look : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        CreateRay();
         PlayerInElevatorMove();
         Look();
         Move();
@@ -77,6 +76,7 @@ public class Move_and_Look : MonoBehaviour
         StairsControl();
         lookToStairs = false;
 
+        CreateRay();
     }
 
     void Look()
