@@ -79,9 +79,8 @@ public class Generator : MonoBehaviour
         stop = true;
         start = false;
         generatorAudio.Stop();
-        generatorVFX.Stop();
         generatorRotateVFX.Stop();
-        particleGeneratorStart.Play();
+        generatorVFX.Stop();
         generatorAudio.PlayOneShot(buttonClick, 0.5f);
     }
 }
