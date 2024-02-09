@@ -33944,6 +33944,7 @@ MonoBehaviour:
   bottomLevel: 0.3
   elevatorActive: 0
   buttonClick: {fileID: 8300000, guid: bba74e54a0cee534d97da43d75900c10, type: 3}
+  elevatorHoist: {fileID: 8300000, guid: 359dede80fe7fd44a95d73d64e0d1567, type: 3}
   elevatorAudio: {fileID: 0}
   cageDoor: {fileID: 0}
   generator: {fileID: 926048884}
@@ -33957,7 +33958,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 7e7b0c25fa3a1bf4aa9f5e3ba907f49d, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 043a6294a44472b45bb30fd2b14b77a5, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

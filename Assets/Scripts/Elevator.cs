@@ -26,6 +26,7 @@ public class Elevator : MonoBehaviour
 
 
     public AudioClip buttonClick;
+    public AudioClip elevatorHoist;
     public AudioSource elevatorAudio;
     /*    public AudioSource elevatorButton;*/
 
