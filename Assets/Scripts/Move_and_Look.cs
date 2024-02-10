@@ -25,13 +25,14 @@ public class Move_and_Look : MonoBehaviour
     public float rayDistance = 1.5f;
 
     public bool onGround = true;
-    public float rayToGroundDistance = 0.9f;
+    public float rayToGroundDistance = 0.37f;
 
     public float verticalRotation = 0;
     public float horizontalRotation = 0;
 
     public LayerMask cave;
     public LayerMask used;
+    public LayerMask floor;
 
     public GameObject elevator;
     private Elevator elevatorScript;
@@ -60,6 +61,7 @@ public class Move_and_Look : MonoBehaviour
         player = GetComponent<Rigidbody>();
         cave = 1 << 6;
         used = 1 << 8;
+        floor = 1 << 11;
 
         elevator = GameObject.Find("Elevator");
         elevatorScript = elevator.GetComponent<Elevator>();
@@ -72,6 +74,7 @@ public class Move_and_Look : MonoBehaviour
         PlayerInElevatorMove();
         Look();
         Move();
+        GroundCheck();
 
         StairsControl();
         lookToStairs = false;
@@ -136,11 +139,6 @@ public class Move_and_Look : MonoBehaviour
 
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
         Debug.DrawRay(ray.origin, ray.direction * rayDistance, UnityEngine.Color.yellow);
-        
-        Ray rayBottom = new Ray(transform.position, Vector3.down);
-        Debug.DrawRay(rayBottom.origin, rayBottom.direction * rayToGroundDistance, UnityEngine.Color.red);
-
-        GroundCheck(rayBottom);
 
         RaycastHit hit;
         int layer_mask = LayerMask.GetMask("used", "used_2");
@@ -155,13 +153,26 @@ public class Move_and_Look : MonoBehaviour
         }
     }
 
-    void GroundCheck(Ray rayBottom)
+    void GroundCheck()
     {
-        onGround = Physics.Raycast(rayBottom, rayToGroundDistance);
-        if (onGround)
+        /*onGround = Physics.Raycast(rayBottom, rayToGroundDistance);*/
+        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - rayToGroundDistance, transform.position.z);
+        if (Physics.CheckSphere(spherePosition, rayToGroundDistance, floor, QueryTriggerInteraction.Ignore))
         {
+            onGround = true;
             speed = groundSpeed;
         }
+    }
+    private void OnDrawGizmosSelected()
+    {
+        UnityEngine.Color transparentGreen = new UnityEngine.Color(0.0f, 1.0f, 0.0f, 0.35f);
+        UnityEngine.Color transparentRed = new UnityEngine.Color(1.0f, 0.0f, 0.0f, 0.35f);
+
+        if (onGround) Gizmos.color = transparentGreen;
+        else Gizmos.color = transparentRed;
+
+        // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
+        Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - rayToGroundDistance, transform.position.z), rayToGroundDistance);
     }
 
     void ClickOnHandler(RaycastHit hit)
