@@ -28,11 +28,6 @@ public class Elevator : MonoBehaviour
     public AudioClip buttonClick;
     public AudioSource elevatorAudio;
     
-    public AudioSource elevatorHoistSource;
-    public AudioClip elevatorHoist;
-    /*    public AudioSource elevatorButton;*/
-
-
 
     public GameObject cageDoor;
     private bool cageOpen = false;
