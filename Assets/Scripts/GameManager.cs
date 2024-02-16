@@ -4,7 +4,7 @@ using UnityEngine;
 using static UnityEditor.Experimental.GraphView.GraphView;
 using TMPro;
 using UnityEngine.UIElements;
-
+using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
@@ -33,6 +33,11 @@ public class GameManager : MonoBehaviour
     public AudioSource audioManagerSource;
 
 
+    //GameControl
+    public bool paused = false;
+    private GameObject pauseMenu;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -54,7 +59,9 @@ public class GameManager : MonoBehaviour
         audioManagerSource = audioManager.GetComponent<AudioSource>();
 
 
-
+        //GameControl
+        pauseMenu = GameObject.Find("Pause");
+        pauseMenu.SetActive(false);
     }
 
     // Update is called once per frame
@@ -66,6 +73,10 @@ public class GameManager : MonoBehaviour
         {
             alarmLight.SetActive(true);
             alarmLight.GetComponent<Animator>().SetBool("alarmLigthActive", true);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape)){
+            PauseControl();
         }
     }
 
@@ -79,6 +90,21 @@ public class GameManager : MonoBehaviour
         {
             pointerTMP.text = pointerText;
             pointerTMP.lineSpacingAdjustment = 0;
+        }
+    }
+
+    void PauseControl()
+    {
+        paused = !paused;
+
+        if (paused)
+        {
+            Time.timeScale = 0f;
+            pauseMenu.SetActive(true);
+        } else
+        {
+            Time.timeScale = 1.0f;
+            pauseMenu.SetActive(false);
         }
     }
 }
