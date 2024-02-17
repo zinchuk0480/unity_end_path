@@ -5,6 +5,8 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 using TMPro;
 using UnityEngine.UIElements;
 using UnityEditor;
+using UnityEngine.VFX;
+using UnityEngine.Rendering.Universal;
 
 public class GameManager : MonoBehaviour
 {
@@ -33,6 +35,8 @@ public class GameManager : MonoBehaviour
     public AudioSource audioManagerSource;
 
 
+    public VisualEffect boom;
+
     //GameControl
     public bool paused = false;
     private GameObject pauseMenu;
@@ -57,6 +61,9 @@ public class GameManager : MonoBehaviour
 
         audioManager = GameObject.Find("AudioManager");
         audioManagerSource = audioManager.GetComponent<AudioSource>();
+
+
+        boom = GameObject.Find("Boom").GetComponent<VisualEffect>();
 
 
         //GameControl

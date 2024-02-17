@@ -72,7 +72,10 @@ public class Move_and_Look : MonoBehaviour
     void LateUpdate()
     {
         PlayerInElevatorMove();
-        Look();
+        if (!gameManagerScript.paused)
+        {
+            Look();
+        }
         Move();
         GroundCheck();
 
@@ -238,6 +241,7 @@ public class Move_and_Look : MonoBehaviour
         {
             Debug.Log("Generator!!!!");
             gameManagerScript.alarm = true;
+            gameManagerScript.boom.Play();
         }
     }
     void OnTriggerExit(Collider other)
