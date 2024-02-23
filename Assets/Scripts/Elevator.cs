@@ -20,9 +20,9 @@ public class Elevator : MonoBehaviour
     public float bottomLevel = 0.3f;
 
     public bool elevatorActive = false;
-    private bool elevatorStartMoving = false;
-    private bool elevatorIsDown = false;
-    private bool elevatorIsUp = true;
+    public bool elevatorStartMoving = false;
+    public bool elevatorIsDown = false;
+    public bool elevatorIsUp = true;
 
 
     public AudioClip buttonClick;
@@ -143,5 +143,13 @@ public class Elevator : MonoBehaviour
         {
             elevatorAudio.Stop();
         }
+    }
+
+    public void Restart()
+    {
+        elevatorStartMoving = false;
+        elevatorIsDown = false;
+        elevatorIsUp = true;
+        transform.position = new Vector3(transform.position.x, topLevel, transform.position.z);
     }
 }

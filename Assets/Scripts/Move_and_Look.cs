@@ -16,6 +16,8 @@ public class Move_and_Look : MonoBehaviour
 
     private GameObject playerContainer;
     private Rigidbody player;
+    private Vector3 playerStartPosition = new Vector3(-9.5f, 1.6f, -8.08f);
+    private Quaternion playerStartRotate = Quaternion.Euler(0f, 24f, 0f);
 
     public float speed;
     public float groundSpeed = 5.0f;
@@ -53,6 +55,7 @@ public class Move_and_Look : MonoBehaviour
     void Start()
     {
         speed = groundSpeed;
+        
 
         gameManager = GameObject.Find("GameManager");
         gameManagerScript = gameManager.GetComponent<GameManager>();
@@ -83,6 +86,7 @@ public class Move_and_Look : MonoBehaviour
         lookToStairs = false;
 
         CreateRay();
+        Debug.Log("exitDoorClosed: " + gameManagerScript.exitDoorClosed);
     }
 
     void Look()
@@ -190,6 +194,19 @@ public class Move_and_Look : MonoBehaviour
             gameManagerScript.audioManagerSource.transform.position = hit.point;
             generatorScript.generatorActive = true;
         }
+        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E) && hit.rigidbody.CompareTag("exitDoor"))
+        {
+            gameManagerScript.audioManagerSource.transform.position = hit.point;
+            gameManagerScript.exitDoorClosed = !gameManagerScript.exitDoorClosed;
+            if (gameManagerScript.exitDoorClosed)
+            {
+                gameManagerScript.exitDoor.GetComponent<Animator>().SetBool("doorIsClosed", true);
+            } else
+            {
+                gameManagerScript.exitDoor.GetComponent<Animator>().SetBool("doorIsClosed", false);
+                gameManagerScript.exitDoor.GetComponent<AudioSource>().PlayOneShot(gameManagerScript.doorSignal, 0.7f);
+            }
+        }
         if (hit.rigidbody.CompareTag("stairs"))
         {
             lookToStairs = true;
@@ -237,11 +254,16 @@ public class Move_and_Look : MonoBehaviour
             inElevator = true;
         }
 
-        if (other.CompareTag("alarmTrigger"))
+        if (other.CompareTag("alarmTrigger") && !generatorScript.generatorBroke)
         {
-            Debug.Log("Generator!!!!");
             gameManagerScript.alarm = true;
             gameManagerScript.boom.Play();
+        }
+        if (other.CompareTag("insideDoorTrigger") && !gameManagerScript.insideDoorOpen)
+        {
+            gameManagerScript.insideDoor.GetComponent<Animator>().SetBool("doorOpening", true);
+            gameManagerScript.insideDoorAudio.PlayOneShot(gameManagerScript.doorOpening);
+            gameManagerScript.insideDoorOpen = true;
         }
     }
     void OnTriggerExit(Collider other)
@@ -250,5 +272,19 @@ public class Move_and_Look : MonoBehaviour
         {
             inElevator = false;
         }
+        if (other.CompareTag("insideDoorTrigger") && gameManagerScript.insideDoorOpen)
+        {
+            gameManagerScript.insideDoor.GetComponent<Animator>().SetBool("doorOpening", false);
+            gameManagerScript.insideDoorAudio.PlayOneShot(gameManagerScript.doorClosing);
+            gameManagerScript.insideDoorOpen = false;
+        }
+    }
+
+    public void Restart()
+    {
+        inElevator = false;
+        PlayerInElevatorMove();
+        player.transform.position = playerStartPosition;
+        player.transform.rotation = playerStartRotate;
     }
 }

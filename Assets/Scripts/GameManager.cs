@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 using UnityEditor;
 using UnityEngine.VFX;
 using UnityEngine.Rendering.Universal;
+using UnityEditor.PackageManager;
 
 public class GameManager : MonoBehaviour
 {
@@ -21,11 +22,16 @@ public class GameManager : MonoBehaviour
     // GameObjects
     public GameObject generator;
     private Generator generatorScript;
-    public bool generatorBroke = false;
+
+
+    public GameObject elevator;
+    private Elevator elevatorScript;
 
     private GameObject moveAndLook;
     private Move_and_Look moveAndLookScript;
 
+    public GameObject exitDoor;
+    public bool exitDoorClosed = true;
 
 
     public bool alarm = false;
@@ -34,6 +40,13 @@ public class GameManager : MonoBehaviour
     private GameObject audioManager;
     public AudioSource audioManagerSource;
 
+    public bool insideDoorOpen = false;
+    public GameObject insideDoor;
+    public AudioSource insideDoorAudio;
+
+    public AudioClip doorSignal;
+    public AudioClip doorOpening;
+    public AudioClip doorClosing;
 
     public VisualEffect boom;
 
@@ -51,6 +64,9 @@ public class GameManager : MonoBehaviour
         generator = GameObject.FindGameObjectWithTag("generatorButton");
         generatorScript = generator.GetComponent<Generator>();
 
+        elevator = GameObject.FindGameObjectWithTag("Elevator");
+        elevatorScript = elevator.GetComponent<Elevator>();
+
         moveAndLook = GameObject.FindGameObjectWithTag("Player");
         moveAndLookScript = moveAndLook.GetComponent<Move_and_Look>();
 
@@ -58,12 +74,18 @@ public class GameManager : MonoBehaviour
         GameObject alarmLight = GameObject.Find("alarm_lights");
         alarmLight.SetActive(false);
 
+        exitDoor = GameObject.FindGameObjectWithTag("exitDoor");
+
+
 
         audioManager = GameObject.Find("AudioManager");
         audioManagerSource = audioManager.GetComponent<AudioSource>();
 
+        insideDoor = GameObject.FindGameObjectWithTag("insideDoor");
+        insideDoorAudio = insideDoor.GetComponent<AudioSource>();
 
         boom = GameObject.Find("Boom").GetComponent<VisualEffect>();
+
 
 
         //GameControl
@@ -82,7 +104,7 @@ public class GameManager : MonoBehaviour
             alarmLight.GetComponent<Animator>().SetBool("alarmLigthActive", true);
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape)){
+        if (Input.GetKeyDown(KeyCode.Escape)) {
             PauseControl();
         }
     }
@@ -100,7 +122,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void PauseControl()
+    public void PauseControl()
     {
         paused = !paused;
 
@@ -113,5 +135,19 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1.0f;
             pauseMenu.SetActive(false);
         }
+    }
+
+    public void ApplicationControl()
+    {
+        Application.Quit();
+    }
+
+    public void RestartControl()
+    {
+        alarm = false;
+        moveAndLookScript.Restart();
+        elevatorScript.Restart();
+        generatorScript.Restart();
+        PauseControl();
     }
 }

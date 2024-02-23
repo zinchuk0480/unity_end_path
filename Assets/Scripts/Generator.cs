@@ -8,6 +8,7 @@ public class Generator : MonoBehaviour
     private GameObject gameManager;
     private GameManager gameManagerScript;
 
+    public bool generatorBroke = false;
     public bool generatorActive = false;
     public bool start = false;
     public bool stop = true;
@@ -42,16 +43,16 @@ public class Generator : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        if (!gameManagerScript.generatorBroke && gameManagerScript.alarm)
+        if (!generatorBroke && gameManagerScript.alarm)
         {
             GeneratorOff();
-            gameManagerScript.generatorBroke = true;
+            generatorBroke = true;
         }
-        if (!gameManagerScript.generatorBroke && start && generatorActive)
+        if (!generatorBroke && start && generatorActive)
         {
             GeneratorOff();
         }
-        if (!gameManagerScript.generatorBroke && stop && generatorActive)
+        if (!generatorBroke && stop && generatorActive)
         {
             GeneratorOn();
         }
@@ -82,5 +83,16 @@ public class Generator : MonoBehaviour
         generatorVFX.Stop();
         generatorRotateVFX.Stop();
         generatorAudio.PlayOneShot(buttonClick, 0.5f);   
+    }
+
+    public void Restart()
+    {
+        generatorBroke = false;
+        generatorActive = false;
+        start = false;
+        stop = true;
+        generatorAudio.Stop();
+        generatorVFX.Stop();
+        generatorRotateVFX.Stop();
     }
 }
