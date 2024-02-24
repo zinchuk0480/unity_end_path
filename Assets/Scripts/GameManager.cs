@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviour
     public GameObject generator;
     private Generator generatorScript;
 
-
     public GameObject elevator;
     private Elevator elevatorScript;
 
@@ -34,6 +33,8 @@ public class GameManager : MonoBehaviour
 
     public GameObject exitDoor;
     public bool exitDoorClosed = true;
+
+    public GameObject caveWallLight;
 
 
     public bool alarm = false;
@@ -46,9 +47,11 @@ public class GameManager : MonoBehaviour
     public GameObject insideDoor;
     public AudioSource insideDoorAudio;
 
+    
     public AudioClip doorSignal;
     public AudioClip doorOpening;
     public AudioClip doorClosing;
+    
 
     public VisualEffect boom;
 
@@ -71,7 +74,10 @@ public class GameManager : MonoBehaviour
 
         moveAndLook = GameObject.FindGameObjectWithTag("Player");
         moveAndLookScript = moveAndLook.GetComponent<Move_and_Look>();
+        
 
+        caveWallLight = GameObject.FindGameObjectWithTag("wallLight");
+        caveWallLight.SetActive(false);
 
         GameObject alarmLight = GameObject.Find("alarm_lights");
         alarmLight.SetActive(false);
@@ -150,7 +156,9 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F))
         {
+
             flashLightIsOn = !flashLightIsOn;
+            moveAndLookScript.playerAudio.PlayOneShot(moveAndLookScript.flashSound, 0.3f);
             if (flashLightIsOn)
             {
                 flashLight.SetActive(true);
@@ -167,6 +175,7 @@ public class GameManager : MonoBehaviour
     public void RestartControl()
     {
         alarm = false;
+        alarmLight.SetActive(false);
         moveAndLookScript.Restart();
         elevatorScript.Restart();
         generatorScript.Restart();

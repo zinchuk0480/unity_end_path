@@ -50,6 +50,9 @@ public class Move_and_Look : MonoBehaviour
     public bool onStairs = false;
     private bool isMoving = false;
 
+    public AudioSource playerAudio;
+    public AudioClip flashSound;
+
 
     // Start is called before the first frame update
     void Start()

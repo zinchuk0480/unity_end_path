@@ -73,6 +73,7 @@ public class Generator : MonoBehaviour
         generatorRotateVFX.Play();
         particleGeneratorStart.Play();
         generatorAudio.PlayOneShot(buttonClick, 0.5f);
+        gameManagerScript.caveWallLight.SetActive(true);
     }
     public void GeneratorOff()
     {
@@ -83,6 +84,7 @@ public class Generator : MonoBehaviour
         generatorVFX.Stop();
         generatorRotateVFX.Stop();
         generatorAudio.PlayOneShot(buttonClick, 0.5f);   
+        gameManagerScript.caveWallLight.SetActive(false);
     }
 
     public void Restart()
