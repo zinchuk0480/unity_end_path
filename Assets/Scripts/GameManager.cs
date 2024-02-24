@@ -55,6 +55,9 @@ public class GameManager : MonoBehaviour
 
     public VisualEffect boom;
 
+    public Camera caveCamera;
+
+
     //GameControl
     public bool paused = false;
     private GameObject pauseMenu;
@@ -93,6 +96,9 @@ public class GameManager : MonoBehaviour
         insideDoorAudio = insideDoor.GetComponent<AudioSource>();
 
         boom = GameObject.Find("Boom").GetComponent<VisualEffect>();
+
+
+        caveCamera = GameObject.FindGameObjectWithTag("caveCameraView").GetComponent<Camera>();
 
 
 
