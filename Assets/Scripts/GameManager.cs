@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     public GameObject pointer;
     public TextMeshProUGUI pointerTMP;
 
+    public GameObject flashLight;
+    private bool flashLightIsOn = false;
 
     // GameObjects
     public GameObject generator;
@@ -97,6 +99,8 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         PointerControl();
+        FlashControl();
+        
 
         if (alarm)
         {
@@ -141,6 +145,24 @@ public class GameManager : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public void FlashControl()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            flashLightIsOn = !flashLightIsOn;
+            if (flashLightIsOn)
+            {
+                flashLight.SetActive(true);
+            }
+            if (!flashLightIsOn)
+            {
+                flashLight.SetActive(false);
+            }
+        }
+
+    }
+
 
     public void RestartControl()
     {

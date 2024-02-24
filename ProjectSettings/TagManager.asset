@@ -11,6 +11,9 @@ TagManager:
   - alarmLigth
   - alarmTrigger
   - stairs
+  - exitDoor
+  - insideDoor
+  - insideDoorTrigger
   layers:
   - Default
   - TransparentFX

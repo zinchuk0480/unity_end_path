@@ -86,7 +86,6 @@ public class Move_and_Look : MonoBehaviour
         lookToStairs = false;
 
         CreateRay();
-        Debug.Log("exitDoorClosed: " + gameManagerScript.exitDoorClosed);
     }
 
     void Look()
