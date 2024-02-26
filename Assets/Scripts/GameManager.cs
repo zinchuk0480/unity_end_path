@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
+
 using TMPro;
 using UnityEngine.UIElements;
 using UnityEditor;
 using UnityEngine.VFX;
 using UnityEngine.Rendering.Universal;
-using UnityEditor.PackageManager;
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -61,11 +62,14 @@ public class GameManager : MonoBehaviour
     //GameControl
     public bool paused = false;
     private GameObject pauseMenu;
-
+    
 
     // Start is called before the first frame update
     void Start()
     {
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.visible = false;
+
         pointer = GameObject.Find("Pointer");
         pointerTMP = pointer.GetComponent<TextMeshProUGUI>();
 
@@ -146,10 +150,14 @@ public class GameManager : MonoBehaviour
         {
             Time.timeScale = 0f;
             pauseMenu.SetActive(true);
+            UnityEngine.Cursor.visible = true;
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
         } else
         {
             Time.timeScale = 1.0f;
             pauseMenu.SetActive(false);
+            UnityEngine.Cursor.visible = false;
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         }
     }
 
@@ -177,6 +185,10 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void MainMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
 
     public void RestartControl()
     {

@@ -4,26 +4,38 @@ using System.Drawing;
 using TMPro;
 using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
-using UnityEditor.ShaderGraph;
+
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
 public class Move_and_Look : MonoBehaviour
 {
-    private GameObject gameManager;
-    private GameManager gameManagerScript;
+    private CharacterController controller;
+    public float playerHeight = 1.4f;
+    public float playerRadius = 0.5f;
+    public float playerCenterY = -0.5f;
+    private Vector3 playerVelocity;
+    private float gravityValue = -9.81f;
 
     private GameObject playerContainer;
     private Rigidbody player;
-    private Vector3 playerStartPosition = new Vector3(-9.5f, 1.6f, -8.08f);
+    private Vector3 playerStartPosition = new Vector3(-9.5f, 0f, -8.08f);
     private Quaternion playerStartRotate = Quaternion.Euler(0f, 24f, 0f);
 
+
+
+
+    private GameObject gameManager;
+    private GameManager gameManagerScript;
+
+
     public float speed;
-    public float groundSpeed = 5.0f;
-    public float airSpeed = 3f;
+    [SerializeField] public float groundSpeed = 35.0f;
+    public float airSpeed = 10f;
     public float mouseSens = 2.0f;
-    public float jumpForce = 20.0f;
+    public float jumpForce = 1.5f;
     public float rayDistance = 1.5f;
 
     public bool onGround = true;
@@ -57,6 +69,11 @@ public class Move_and_Look : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        controller = gameObject.AddComponent<CharacterController>();
+        controller.height = playerHeight;
+        controller.radius = playerRadius;
+        controller.center = new Vector3(0, playerCenterY, 0);
+
         speed = groundSpeed;
         
 
@@ -83,7 +100,8 @@ public class Move_and_Look : MonoBehaviour
             Look();
         }
         Move();
-        GroundCheck();
+
+/*        GroundCheck();*/
 
         StairsControl();
         lookToStairs = false;
@@ -96,9 +114,9 @@ public class Move_and_Look : MonoBehaviour
         horizontalRotation = Input.GetAxis("Mouse X") * mouseSens;
         transform.Rotate(0, horizontalRotation, 0);
 
-        // Вращение камеры по вертикали
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         verticalRotation -= Input.GetAxis("Mouse Y") * mouseSens;
-        verticalRotation = Mathf.Clamp(verticalRotation, -90, 90); // Ограничение угла обзора по вертикали
+        verticalRotation = Mathf.Clamp(verticalRotation, -90, 90); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
 
     }
@@ -126,12 +144,29 @@ public class Move_and_Look : MonoBehaviour
         }
         else
         {
-            transform.Translate(new Vector3(input_horizontal, 0, input_forward));
-            Jump();
+            onGround = controller.isGrounded;
+            if (onGround && playerVelocity.y < 0 && !inElevator)
+            {
+                playerVelocity.y = 0f;
+            }
+
+            Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+            move = transform.TransformDirection(move);
+            controller.Move(move * Time.deltaTime * speed);
+
+            if (Input.GetKeyDown(KeyCode.Space) && onGround)
+            {
+                playerVelocity.y += Mathf.Sqrt(jumpForce * -3.0f * gravityValue);
+            }
+
+            playerVelocity.y += gravityValue * Time.deltaTime;
+            controller.Move(playerVelocity * Time.deltaTime);
+
+            /*Jump();*/
         }
     }
 
-    void Jump()
+    /*void Jump()
     {
         if (Input.GetKeyDown(KeyCode.Space) && onGround)
         {
@@ -139,11 +174,11 @@ public class Move_and_Look : MonoBehaviour
             speed = airSpeed;
             onGround = false;
         }
-    }
+    }*/
 
     void CreateRay()
     {
-        // центр экрана
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
 
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
@@ -284,6 +319,7 @@ public class Move_and_Look : MonoBehaviour
 
     public void Restart()
     {
+        player.velocity = Vector3.zero;
         inElevator = false;
         PlayerInElevatorMove();
         player.transform.position = playerStartPosition;
