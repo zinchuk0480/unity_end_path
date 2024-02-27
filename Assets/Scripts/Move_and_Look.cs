@@ -13,9 +13,9 @@ using static UnityEngine.GraphicsBuffer;
 public class Move_and_Look : MonoBehaviour
 {
     private CharacterController controller;
-    public float playerHeight = 1.4f;
-    public float playerRadius = 0.5f;
-    public float playerCenterY = -0.5f;
+    private float playerHeight = 1.7f;
+    private float playerRadius = 0.5f;
+    private float playerCenterY = 0.5f;
     private Vector3 playerVelocity;
     private float gravityValue = -9.81f;
 
@@ -69,7 +69,8 @@ public class Move_and_Look : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        controller = gameObject.AddComponent<CharacterController>();
+        /*controller = gameObject.AddComponent<CharacterController>();*/
+        controller = GetComponent<CharacterController>();
         controller.height = playerHeight;
         controller.radius = playerRadius;
         controller.center = new Vector3(0, playerCenterY, 0);
@@ -101,8 +102,6 @@ public class Move_and_Look : MonoBehaviour
         }
         Move();
 
-/*        GroundCheck();*/
-
         StairsControl();
         lookToStairs = false;
 
@@ -114,9 +113,8 @@ public class Move_and_Look : MonoBehaviour
         horizontalRotation = Input.GetAxis("Mouse X") * mouseSens;
         transform.Rotate(0, horizontalRotation, 0);
 
-        // �������� ������ �� ���������
         verticalRotation -= Input.GetAxis("Mouse Y") * mouseSens;
-        verticalRotation = Mathf.Clamp(verticalRotation, -90, 90); // ����������� ���� ������ �� ���������
+        verticalRotation = Mathf.Clamp(verticalRotation, -90, 90);
         Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
 
     }
@@ -161,24 +159,12 @@ public class Move_and_Look : MonoBehaviour
 
             playerVelocity.y += gravityValue * Time.deltaTime;
             controller.Move(playerVelocity * Time.deltaTime);
-
-            /*Jump();*/
         }
     }
 
-    /*void Jump()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && onGround)
-        {
-            player.AddForce(Vector3.up * jumpForce, ForceMode.Force);
-            speed = airSpeed;
-            onGround = false;
-        }
-    }*/
 
     void CreateRay()
     {
-        // ����� ������
         Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
 
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
@@ -192,31 +178,8 @@ public class Move_and_Look : MonoBehaviour
         if (Physics.Raycast(ray, out hit, rayDistance, used))
         {
             gameManagerScript.pointerTMP.color = new UnityEngine.Color(1, 0, 0, 0.7f);
-            Debug.Log(hit.rigidbody.name);
             ClickOnHandler(hit);
         }
-    }
-
-    void GroundCheck()
-    {
-        /*onGround = Physics.Raycast(rayBottom, rayToGroundDistance);*/
-        Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - rayToGroundDistance, transform.position.z);
-        if (Physics.CheckSphere(spherePosition, rayToGroundDistance, floor, QueryTriggerInteraction.Ignore))
-        {
-            onGround = true;
-            speed = groundSpeed;
-        }
-    }
-    private void OnDrawGizmosSelected()
-    {
-        UnityEngine.Color transparentGreen = new UnityEngine.Color(0.0f, 1.0f, 0.0f, 0.35f);
-        UnityEngine.Color transparentRed = new UnityEngine.Color(1.0f, 0.0f, 0.0f, 0.35f);
-
-        if (onGround) Gizmos.color = transparentGreen;
-        else Gizmos.color = transparentRed;
-
-        // when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
-        Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - rayToGroundDistance, transform.position.z), rayToGroundDistance);
     }
 
     void ClickOnHandler(RaycastHit hit)
@@ -320,9 +283,11 @@ public class Move_and_Look : MonoBehaviour
     public void Restart()
     {
         player.velocity = Vector3.zero;
+        controller.enabled = false;
         inElevator = false;
         PlayerInElevatorMove();
         player.transform.position = playerStartPosition;
         player.transform.rotation = playerStartRotate;
+        controller.enabled = true;
     }
 }
