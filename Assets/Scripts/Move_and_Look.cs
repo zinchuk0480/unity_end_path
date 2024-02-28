@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
+using static Unity.Burst.Intrinsics.X86;
 using static UnityEngine.GraphicsBuffer;
 
 public class Move_and_Look : MonoBehaviour
@@ -32,8 +33,9 @@ public class Move_and_Look : MonoBehaviour
 
 
     public float speed;
-    [SerializeField] public float groundSpeed = 35.0f;
-    public float airSpeed = 10f;
+    public float speedWalk = 3.0f;
+    public float speedRun = 5.0f;
+    public float speedAir = 1.0f;
     public float mouseSens = 2.0f;
     public float jumpForce = 1.5f;
     public float rayDistance = 1.5f;
@@ -60,7 +62,6 @@ public class Move_and_Look : MonoBehaviour
     private GameObject current_stairs;
     public bool lookToStairs = false;
     public bool onStairs = false;
-    private bool isMoving = false;
 
     public AudioSource playerAudio;
     public AudioClip flashSound;
@@ -75,7 +76,7 @@ public class Move_and_Look : MonoBehaviour
         controller.radius = playerRadius;
         controller.center = new Vector3(0, playerCenterY, 0);
 
-        speed = groundSpeed;
+        speed = speedWalk;
         
 
         gameManager = GameObject.Find("GameManager");
@@ -121,6 +122,13 @@ public class Move_and_Look : MonoBehaviour
 
     void Move()
     {
+        speed = speedWalk;
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            speed = speedRun;
+        }
+
         float input_forward = Input.GetAxis("Vertical") * speed * Time.deltaTime;
         float input_horizontal = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
 
@@ -143,14 +151,14 @@ public class Move_and_Look : MonoBehaviour
         else
         {
             onGround = controller.isGrounded;
-            if (onGround && playerVelocity.y < 0 && !inElevator)
+            if (onGround && playerVelocity.y < 0)
             {
                 playerVelocity.y = 0f;
             }
 
-            Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+            Vector3 move = new Vector3(input_horizontal, 0, input_forward);
             move = transform.TransformDirection(move);
-            controller.Move(move * Time.deltaTime * speed);
+            controller.Move(move);
 
             if (Input.GetKeyDown(KeyCode.Space) && onGround)
             {
@@ -242,8 +250,6 @@ public class Move_and_Look : MonoBehaviour
         } else
         {
             transform.SetParent(playerContainer.transform);
-            /*transform.position = transform.position;*/
-            /*transform.parent.position = player.transform.position;*/
             player.isKinematic = false;
         }
     }
@@ -257,13 +263,17 @@ public class Move_and_Look : MonoBehaviour
         if (other.CompareTag("alarmTrigger") && !generatorScript.generatorBroke)
         {
             gameManagerScript.alarm = true;
-            gameManagerScript.boom.Play();
+            gameManagerScript.vfxBoom.Play();
+
+            gameManagerScript.afxBoom.transform.position = generatorScript.transform.position;
+            gameManagerScript.afxBoom.PlayOneShot(gameManagerScript.afxBoomClip);
         }
         if (other.CompareTag("insideDoorTrigger") && !gameManagerScript.insideDoorOpen)
         {
-            gameManagerScript.insideDoor.GetComponent<Animator>().SetBool("doorOpening", true);
-            gameManagerScript.insideDoorAudio.PlayOneShot(gameManagerScript.doorOpening);
             gameManagerScript.insideDoorOpen = true;
+            gameManagerScript.insideDoor.GetComponent<Animator>().SetBool("doorOpening", true);
+            gameManagerScript.insideDoorAudio.Stop();
+            gameManagerScript.insideDoorAudio.PlayOneShot(gameManagerScript.doorOpening);
         }
     }
     void OnTriggerExit(Collider other)
@@ -274,9 +284,10 @@ public class Move_and_Look : MonoBehaviour
         }
         if (other.CompareTag("insideDoorTrigger") && gameManagerScript.insideDoorOpen)
         {
-            gameManagerScript.insideDoor.GetComponent<Animator>().SetBool("doorOpening", false);
-            gameManagerScript.insideDoorAudio.PlayOneShot(gameManagerScript.doorClosing);
             gameManagerScript.insideDoorOpen = false;
+            gameManagerScript.insideDoor.GetComponent<Animator>().SetBool("doorOpening", false);
+            gameManagerScript.insideDoorAudio.Stop();
+            gameManagerScript.insideDoorAudio.PlayOneShot(gameManagerScript.doorClosing);
         }
     }
 

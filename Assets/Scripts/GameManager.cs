@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEngine.VFX;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
+using static Unity.Burst.Intrinsics.X86;
 
 
 public class GameManager : MonoBehaviour
@@ -46,15 +47,18 @@ public class GameManager : MonoBehaviour
 
     public bool insideDoorOpen = false;
     public GameObject insideDoor;
+
     public AudioSource insideDoorAudio;
+    public GameObject afx;
+    public AudioSource afxBoom;
 
     
     public AudioClip doorSignal;
     public AudioClip doorOpening;
     public AudioClip doorClosing;
-    
+    public AudioClip afxBoomClip;
 
-    public VisualEffect boom;
+    public VisualEffect vfxBoom;
 
     public Camera caveCamera;
 
@@ -96,10 +100,13 @@ public class GameManager : MonoBehaviour
         audioManager = GameObject.Find("AudioManager");
         audioManagerSource = audioManager.GetComponent<AudioSource>();
 
+        afx = GameObject.Find("afxBoom");
+        afxBoom = afx.GetComponent<AudioSource>();
+
         insideDoor = GameObject.FindGameObjectWithTag("insideDoor");
         insideDoorAudio = insideDoor.GetComponent<AudioSource>();
 
-        boom = GameObject.Find("Boom").GetComponent<VisualEffect>();
+        vfxBoom = GameObject.Find("vfxBoom").GetComponent<VisualEffect>();
 
 
         caveCamera = GameObject.FindGameObjectWithTag("caveCameraView").GetComponent<Camera>();

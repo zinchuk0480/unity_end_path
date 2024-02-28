@@ -30,7 +30,6 @@ public class Elevator : MonoBehaviour
     
 
     public GameObject cageDoor;
-    private bool cageOpen = false;
 
     
     public GameObject generator;
@@ -109,7 +108,6 @@ public class Elevator : MonoBehaviour
             elevatorStartMoving = false;
             elevatorAudio.Stop();
 
-            cageOpen = true;
             cageDoor.GetComponent<Animator>().SetBool("cageDoorClose", true);
         }
     }
@@ -117,7 +115,6 @@ public class Elevator : MonoBehaviour
     {
         transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, topLevel, transform.position.z), elevatorSpeed * Time.deltaTime);
 
-        cageOpen = false;
         cageDoor.GetComponent<Animator>().SetBool("cageDoorClose", false);
 
         if (transform.position.y >= topLevel)
