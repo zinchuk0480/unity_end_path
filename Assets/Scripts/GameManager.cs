@@ -42,6 +42,9 @@ public class GameManager : MonoBehaviour
     public bool alarm = false;
     public GameObject alarmLight;
 
+    public GameObject luke;
+    public bool lukeOpen = true;
+
     private GameObject audioManager;
     public AudioSource audioManagerSource;
 
@@ -66,7 +69,12 @@ public class GameManager : MonoBehaviour
     //GameControl
     public bool paused = false;
     private GameObject pauseMenu;
-    
+
+    public bool gameOver = false;
+    private GameObject gameOverMenu;
+    private GameObject[] gameOverTriggers;
+    public GameObject gameOverDinamyc;
+
 
     // Start is called before the first frame update
     void Start()
@@ -95,6 +103,7 @@ public class GameManager : MonoBehaviour
 
         exitDoor = GameObject.FindGameObjectWithTag("exitDoor");
 
+        luke = GameObject.Find("Luke");
 
 
         audioManager = GameObject.Find("AudioManager");
@@ -116,11 +125,18 @@ public class GameManager : MonoBehaviour
         //GameControl
         pauseMenu = GameObject.Find("Pause");
         pauseMenu.SetActive(false);
+        
+        gameOverMenu = GameObject.Find("Game Over");
+        gameOverMenu.SetActive(false);
+        gameOverTriggers = GameObject.FindGameObjectsWithTag("gameOver");
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        GameOverControl();
         PointerControl();
         FlashControl();
         
@@ -129,6 +145,7 @@ public class GameManager : MonoBehaviour
         {
             alarmLight.SetActive(true);
             alarmLight.GetComponent<Animator>().SetBool("alarmLigthActive", true);
+            gameOverDinamyc.transform.position = new Vector3(2.2f, -0.3f, 0.7f);
         }
 
         if (Input.GetKeyDown(KeyCode.Escape)) {
@@ -163,6 +180,25 @@ public class GameManager : MonoBehaviour
         {
             Time.timeScale = 1.0f;
             pauseMenu.SetActive(false);
+            UnityEngine.Cursor.visible = false;
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        }
+    }
+
+    public void GameOverControl()
+    {
+        if (gameOver)
+        {
+            paused = true;
+            Time.timeScale = 0f;
+            gameOverMenu.SetActive(true);
+            UnityEngine.Cursor.visible = true;
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+        }
+        if (!gameOver & !paused)
+        {
+            Time.timeScale = 1.0f;
+            gameOverMenu.SetActive(false);
             UnityEngine.Cursor.visible = false;
             UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         }
@@ -204,6 +240,8 @@ public class GameManager : MonoBehaviour
         moveAndLookScript.Restart();
         elevatorScript.Restart();
         generatorScript.Restart();
+        gameOver = false;
+        gameOverDinamyc.transform.position = new Vector3(2.2f, -5f, 0.7f);
         PauseControl();
     }
 }

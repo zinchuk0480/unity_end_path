@@ -16,6 +16,8 @@ TagManager:
   - insideDoorTrigger
   - wallLight
   - caveCameraView
+  - gameOver
+  - lukeTrigger
   layers:
   - Default
   - TransparentFX

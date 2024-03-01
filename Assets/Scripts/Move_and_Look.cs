@@ -4,7 +4,7 @@ using System.Drawing;
 using TMPro;
 using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
-
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
@@ -14,31 +14,35 @@ using static UnityEngine.GraphicsBuffer;
 public class Move_and_Look : MonoBehaviour
 {
     private CharacterController controller;
-    private float playerHeight = 1.7f;
+    private float playerHeight;
+    private float playerHeightStay = 1.7f;
+    private float playerHeightSit = 0.7f;
     private float playerRadius = 0.5f;
     private float playerCenterY = 0.5f;
     private Vector3 playerVelocity;
     private float gravityValue = -9.81f;
 
+    public float speed;
+    public float speedWalk = 3.0f;
+    public float speedSit = 2.0f;
+    public float speedRun = 5.0f;
+    public float speedAir = 1.0f;
+    public bool stateSit = false;
+    public float mouseSens = 2.0f;
+    public float jumpForce = 1.5f;
+    public float rayDistance = 1.5f;
+
     private GameObject playerContainer;
-    private Rigidbody player;
+    public Rigidbody player;
     private Vector3 playerStartPosition = new Vector3(-9.5f, 0f, -8.08f);
     private Quaternion playerStartRotate = Quaternion.Euler(0f, 24f, 0f);
-
-
 
 
     private GameObject gameManager;
     private GameManager gameManagerScript;
 
 
-    public float speed;
-    public float speedWalk = 3.0f;
-    public float speedRun = 5.0f;
-    public float speedAir = 1.0f;
-    public float mouseSens = 2.0f;
-    public float jumpForce = 1.5f;
-    public float rayDistance = 1.5f;
+
 
     public bool onGround = true;
     public float rayToGroundDistance = 0.37f;
@@ -72,6 +76,7 @@ public class Move_and_Look : MonoBehaviour
     {
         /*controller = gameObject.AddComponent<CharacterController>();*/
         controller = GetComponent<CharacterController>();
+        playerHeight = playerHeightStay;
         controller.height = playerHeight;
         controller.radius = playerRadius;
         controller.center = new Vector3(0, playerCenterY, 0);
@@ -97,12 +102,23 @@ public class Move_and_Look : MonoBehaviour
     void LateUpdate()
     {
         PlayerInElevatorMove();
-        if (!gameManagerScript.paused)
+        if (!gameManagerScript.paused & !gameManagerScript.gameOver)
         {
             Look();
         }
         Move();
 
+        if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.C))
+        {
+            stateSit = true;
+            playerHeight = playerHeightSit;
+            speed = speedSit;
+        }
+        else
+        {
+            playerHeight = playerHeightStay;
+        }
+        controller.height = playerHeight;
         StairsControl();
         lookToStairs = false;
 
@@ -117,13 +133,17 @@ public class Move_and_Look : MonoBehaviour
         verticalRotation -= Input.GetAxis("Mouse Y") * mouseSens;
         verticalRotation = Mathf.Clamp(verticalRotation, -90, 90);
         Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
-
+        gameManagerScript.flashLight.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
     }
 
     void Move()
     {
+        
         speed = speedWalk;
-
+        if (stateSit)
+        {
+            speed = speedSit;
+        }
         if (Input.GetKey(KeyCode.LeftShift))
         {
             speed = speedRun;
@@ -266,7 +286,7 @@ public class Move_and_Look : MonoBehaviour
             gameManagerScript.vfxBoom.Play();
 
             gameManagerScript.afxBoom.transform.position = generatorScript.transform.position;
-            gameManagerScript.afxBoom.PlayOneShot(gameManagerScript.afxBoomClip);
+            gameManagerScript.afxBoom.PlayOneShot(gameManagerScript.afxBoomClip, 0.2f);
         }
         if (other.CompareTag("insideDoorTrigger") && !gameManagerScript.insideDoorOpen)
         {
@@ -274,6 +294,15 @@ public class Move_and_Look : MonoBehaviour
             gameManagerScript.insideDoor.GetComponent<Animator>().SetBool("doorOpening", true);
             gameManagerScript.insideDoorAudio.Stop();
             gameManagerScript.insideDoorAudio.PlayOneShot(gameManagerScript.doorOpening);
+        }
+        if (other.CompareTag("gameOver"))
+        {
+            gameManagerScript.gameOver = true;
+        }
+        if (other.CompareTag("lukeTrigger") & gameManagerScript.lukeOpen)
+        {
+            gameManagerScript.lukeOpen = false;
+            gameManagerScript.luke.transform.Translate(-99.9f, -11.2f, 13);
         }
     }
     void OnTriggerExit(Collider other)
